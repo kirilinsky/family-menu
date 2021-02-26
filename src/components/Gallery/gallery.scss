@@ -1,0 +1,32 @@
+.gallery {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: 20px;
+  &-nav {
+    width: 100%;
+    height: 45px;
+    overflow-y: auto;
+    scroll-snap-type: x mandatory;
+  }
+  &-grid {
+    width: 100%;
+    display: grid;
+    height: calc(100% - 45px);
+    grid-template-columns: repeat(auto-fit, 210px);
+    overflow-x: auto;
+    transition: all 0.5s linear;
+    grid-auto-rows: 287px;
+    padding: 16px;
+    box-sizing: border-box;
+    gap: 30px 25px;
+    justify-content: center;
+    scroll-snap-type: y proximity;
+    scroll-snap-points-y: repeat(287px);
+    @media screen and (max-width: 720px) {
+      grid-template-columns: repeat(auto-fit, 190px);
+      gap: 20px 15px;
+    }
+  }
+}

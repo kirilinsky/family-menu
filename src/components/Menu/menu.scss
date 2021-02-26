@@ -1,0 +1,67 @@
+.cell {
+  background: #63424318;
+}
+.menu {
+  width: 100%;
+  height: calc(100% - 80px);
+  display: flex;
+  padding: 15px;
+  box-sizing: border-box;
+  transition: all 1s;
+
+  overflow: hidden;
+  &.expanded {
+    gap: 0;
+    transition: all 1s;
+    transition-delay: 0.6s;
+
+    .sidebar {
+      max-width: 0;
+      overflow: hidden;
+      transition: all 1s;
+      transition-delay: 1.2s;
+      .order {
+        transition: 0.5s linear;
+        transition-delay: 0.6s;
+        transform: translateX(-110%);
+        overflow: hidden;
+      }
+      .qr {
+        transition: 0.5s linear;
+        transition-delay: 1s;
+        transform: translateX(-110%);
+
+        overflow: hidden;
+      }
+    }
+  }
+  &.slim {
+    gap: 20px;
+
+    .sidebar {
+      width: 29%;
+      max-width: 555px;
+      overflow: hidden;
+      transition: all 1s;
+      transition-delay: 0.3s;
+      .order {
+        transform: translateX(0);
+        transition: 0.5s linear;
+        transition-delay: 0.6s;
+        overflow: hidden;
+      }
+      .qr {
+        transform: translateX(0);
+        transition: 0.5s linear;
+        transition-delay: 1s;
+        overflow: hidden;
+      }
+    }
+  }
+}
+
+.gallery {
+  grid-area: gallery;
+  transition: all 1s;
+  flex-grow: 1;
+}

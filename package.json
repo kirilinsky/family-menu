@@ -2,14 +2,14 @@
   "name": "padmenu",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
+  "dependencies": { 
+    "jotai": "^0.15.0",
+    "node-sass": "4.14.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-qr-svg": "^2.3.0",
     "react-scripts": "4.0.3",
-    "web-vitals": "^1.0.1"
+    "react-transition-group": "^4.4.1" 
   },
   "scripts": {
     "start": "react-scripts start",
@@ -22,7 +22,7 @@
       "react-app",
       "react-app/jest"
     ]
-  },
+  },"homepage": ".",
   "browserslist": {
     "production": [
       ">0.2%",
