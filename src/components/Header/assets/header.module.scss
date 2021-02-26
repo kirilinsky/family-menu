@@ -7,6 +7,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  &_wrap {
+    display: flex;
+    justify-content: space-evenly;
+  }
 }
 .logo {
   width: 130px;
@@ -15,14 +19,53 @@
   background-size: contain;
 }
 .name {
-  font-family: Roboto, sans-serif;font-weight: bold;
+  font-family: Roboto, sans-serif;
+  font-weight: bold;
   font-size: 13.5px;
   display: flex;
-  width: 120px;
-  height: 60px;align-items: center; 
-  img{
-      height: 16px;
-      margin-left: 4px;
-      
+  width: 60px;
+  height: 60px;
+  align-items: center;
+  margin-right: 10px;
+  img {
+    height: 16px;
+    margin-left: 9px;
+  }
+}
+
+.mobile {
+  display: none;
+  width: 95px;
+  justify-content: space-between;
+  @media screen and (max-width: 685px) {
+     display: flex
+  }
+  &_button {
+    background: transparent;
+    border: none;
+    position: relative;
+    &_cart{
+      background: #3b9226e1;
+      width: 11px;
+      padding: 3px;
+      height: 11px;font-size: 10px;
+      position: absolute;color: #fff;
+      bottom: 3%;
+      right: 3%;display:flex; 
+      align-items:center;
+      justify-content:center; 
+      border-radius: 50%;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+    &:active,
+    &:focus {
+      outline: 0;
+      border: none;
+    }
+    img {
+      height: 30px;
+    }
   }
 }

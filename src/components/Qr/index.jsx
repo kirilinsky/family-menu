@@ -1,4 +1,4 @@
-import React from "react"; 
+import React from "react";
 import "./assets/qr.scss";
 import { QRCode } from "react-qr-svg";
 
@@ -8,16 +8,15 @@ import { orderAtom } from "../../Atoms";
 
 const QR = () => {
   const [order] = useAtom(orderAtom);
-  const filtredOrder = order.map(({ title, quantity }) => ({
+  let filtredOrder = order.map(({ title, quantity }) => ({
     [title]: quantity,
   }));
+  if (filtredOrder.length === 0) {
+    filtredOrder = "empty list";
+  }
   return (
     <div className="qr">
-      {order.length === 0 ? (
-        ""
-      ) : (
-        <QRCode level="Q" value={JSON.stringify(filtredOrder)} />
-      )}
+      <QRCode level="Q" value={JSON.stringify(filtredOrder)} />
     </div>
   );
 };

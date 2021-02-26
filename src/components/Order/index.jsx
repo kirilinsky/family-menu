@@ -19,7 +19,9 @@ const Order = () => {
   };
   return (
     <div className="order cell">
-      {orders.length !== 0 && (
+      {orders.length === 0 ? (
+        <div className="order-empty">Здесь пока что пусто</div>
+      ) : (
         <div className="order-wrap">
           <div className="order-title">Ваш заказ:</div>
 

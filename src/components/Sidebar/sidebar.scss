@@ -1,10 +1,10 @@
 .sidebar{
-   
+    overflow: hidden;
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 30px;
+    gap: 30px;width: auto;
     .order{
         flex-grow: 1;
     }

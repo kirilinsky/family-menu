@@ -1,4 +1,13 @@
 .order {
+  &-empty{
+    height: 100vh;
+    display:flex; 
+    align-items:center;
+    justify-content:center; 
+  }
+  &.cell {
+    width: 100%;
+  }
   &-title {
     font-size: 21px;
     font-weight: bold;
@@ -7,7 +16,7 @@
     height: auto;
     display: flex;
     flex-direction: column;
-    padding: 3px;
+    padding: 3px 5px;
     height: 100%;
     font-size: 12px;
   }
@@ -19,7 +28,9 @@
     overflow-y: auto;
     &-total {
       font-weight: bold;
-      margin: 10px 0;
+      margin: 10px 0;box-sizing: border-box;
+      padding-top: 3px;
+      padding-right: 5px;
       border-top: 2px solid rgba(0, 0, 0, 0.295);
       width: 100%;
       text-align: right;
@@ -38,17 +49,18 @@
         justify-content: space-between;
         align-items: center;
         width: 100%;
-        margin: 5px 0;
+        margin: 5px 0;font-size: 15px;
         &-button {
-          padding: 3px 6px;
+          padding: 4px 7px;
           display: flex;
           align-items: center;
           justify-content: center;
           background: #523637;
-          border-radius: 10px;
+          border-radius: 50%;
+          border: none;width: 30px;height: 30px;
           img {
-            height: 12px;
-            width: 12px;
+            height: 14px;
+            width: 14px;
           }
         }
       }

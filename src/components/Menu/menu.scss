@@ -1,5 +1,5 @@
 .cell {
-  background: #63424318;
+  background: #52363718;
 }
 .menu {
   width: 100%;
@@ -39,11 +39,14 @@
     gap: 20px;
 
     .sidebar {
-      width: 29%;
-      max-width: 555px;
+      width: auto;
+      max-width: 239px;
       overflow: hidden;
       transition: all 1s;
       transition-delay: 0.3s;
+      @media screen and (max-width: 685px) {
+         display: none;
+      }
       .order {
         transform: translateX(0);
         transition: 0.5s linear;

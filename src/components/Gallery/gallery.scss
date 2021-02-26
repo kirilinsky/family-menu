@@ -25,8 +25,12 @@
     scroll-snap-type: y proximity;
     scroll-snap-points-y: repeat(287px);
     @media screen and (max-width: 720px) {
-      grid-template-columns: repeat(auto-fit, 190px);
+      grid-template-columns: repeat(auto-fit, 199px);
       gap: 20px 15px;
+    }
+    @media screen and (max-width: 685px) {
+        grid-template-columns: 1fr 1fr;
     }
   }
 }
+ 
