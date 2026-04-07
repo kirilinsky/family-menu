@@ -7,23 +7,11 @@ const Item = ({ item }) => {
   const [order, setOrder] = useAtom(orderAtom);
 
   const addItem = (item) => {
-    let arr = [...order];
-    if (arr.find((x) => x.id === item.id)) {
-      arr.map((x) => {
-        if (x.id === item.id) {
-          return {
-            ...x,
-            quantity: x.quantity++,
-          };
-        } else {
-          return x;
-        }
-      });
+    if (order.find((x) => x.id === item.id)) {
+      setOrder(order.map((x) => x.id === item.id ? { ...x, quantity: x.quantity + 1 } : x));
     } else {
-      arr.push({ ...item, quantity: 1 });
+      setOrder([...order, { ...item, quantity: 1 }]);
     }
-
-    setOrder(arr);
   };
   return (
     <div className="item">

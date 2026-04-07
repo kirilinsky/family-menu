@@ -1,20 +1,28 @@
-import React from "react";
-
-/* jotai */
-/* import { useAtom } from "jotai";
-import { orderAtom } from "../../Atoms"; */
-import { main } from "./data";
+import { useState } from "react";
+import { categories } from "./data";
 import Item from "./modules/Item";
 import "./gallery.scss";
+
 const Gallery = () => {
-  /* const [order, setOrder] = useAtom(orderAtom); */
+  const [activeId, setActiveId] = useState(categories[0].id);
+  const active = categories.find((c) => c.id === activeId);
 
   return (
     <div className="cell gallery">
-      <div className="gallery-nav">Main Dishes</div>
+      <div className="gallery-nav">
+        {categories.map((c) => (
+          <button
+            key={c.id}
+            className={`gallery-nav-tab${activeId === c.id ? " gallery-nav-tab--active" : ""}`}
+            onClick={() => setActiveId(c.id)}
+          >
+            {c.label}
+          </button>
+        ))}
+      </div>
       <div className="gallery-grid">
-        {main.map((item, index) => (
-          <Item key={index} item={item} />
+        {active.items.map((item) => (
+          <Item key={item.id} item={item} />
         ))}
       </div>
     </div>
