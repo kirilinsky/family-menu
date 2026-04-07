@@ -28,10 +28,7 @@ const Item = ({ item }) => {
   return (
     <div className="item">
       <div className="item-img">
-        <img
-          src={require(`../../data/img/${item.img}`).default}
-          alt={item.img}
-        />
+        <img src={item.img} alt={item.title} />
       </div>
       <div className="item-info">
         <div className="item-info-terms">
@@ -39,7 +36,7 @@ const Item = ({ item }) => {
           <span> {item.price}</span>
         </div>
         <div className="item-info-control">
-          <button onClick={() => addItem(item)}>добавить</button>
+          <button onClick={() => addItem(item)}>Add</button>
         </div>
       </div>
     </div>

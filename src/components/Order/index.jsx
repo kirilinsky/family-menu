@@ -20,10 +20,10 @@ const Order = () => {
   return (
     <div className="order cell">
       {orders.length === 0 ? (
-        <div className="order-empty">Здесь пока что пусто</div>
+        <div className="order-empty">Your cart is empty</div>
       ) : (
         <div className="order-wrap">
-          <div className="order-title">Ваш заказ:</div>
+          <div className="order-title">Your order</div>
 
           <TransitionGroup className="order-reciept">
             {orders.map((x) => (
@@ -32,9 +32,9 @@ const Order = () => {
               </CSSTransition>
             ))}
           </TransitionGroup>
-          <div className="order-reciept-total">итого: {total}.₽</div>
+          <div className="order-reciept-total">Total: ${total}</div>
           <button className="order-reciept-button" onClick={clearOrder}>
-            Очистить
+            Clear
           </button>
         </div>
       )}

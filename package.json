@@ -1,28 +1,30 @@
 {
-  "name": "padmenu",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": { 
-    "jotai": "^0.15.0",
-    "node-sass": "4.14.1",
+  "name": "Padmenu",
+  "version": "0.2.0",
+  "private": false,
+  "dependencies": {
+    "jotai": "^2.19.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-qr-svg": "^2.3.0",
-    "react-scripts": "4.0.3",
-    "react-transition-group": "^4.4.1" 
+    "react-qr-svg": "^2.4.0",
+    "react-scripts": "^5.0.1",
+    "react-transition-group": "^4.4.1",
+    "sass": "^1.99.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "vercel --prod"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ]
-  },"homepage": ".",
+  },
+  "homepage": ".",
   "browserslist": {
     "production": [
       ">0.2%",

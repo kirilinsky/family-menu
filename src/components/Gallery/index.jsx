@@ -11,7 +11,7 @@ const Gallery = () => {
 
   return (
     <div className="cell gallery">
-      <div className="gallery-nav">Основные блюда</div>
+      <div className="gallery-nav">Main Dishes</div>
       <div className="gallery-grid">
         {main.map((item, index) => (
           <Item key={index} item={item} />

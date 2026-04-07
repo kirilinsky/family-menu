@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: #09090b;
 }
 
 code {
@@ -12,10 +13,10 @@ code {
     monospace;
 }
 
-
-.wrap{
+.wrap {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #e5e5e5;position: relative;
+  background: #f4f4f5;
+  position: relative;
 }

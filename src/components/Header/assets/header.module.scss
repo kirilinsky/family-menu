@@ -1,7 +1,8 @@
 .header {
   width: 100%;
   height: 80px;
-  background: #e1dc6b;
+  background: #ffffff;
+  border-bottom: 1px solid #e4e4e7;
   padding: 20px;
   box-sizing: border-box;
   display: flex;
@@ -45,7 +46,7 @@
     border: none;
     position: relative;
     &_cart{
-      background: #3b9226e1;
+      background: #18181b;
       width: 11px;
       padding: 3px;
       height: 11px;font-size: 10px;

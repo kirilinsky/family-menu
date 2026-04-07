@@ -2,7 +2,7 @@
   height: 100vh;
   position: fixed;
   width: 100vw;
-  background: rgba(46, 39, 43, 0.781);
+  background: rgba(0, 0, 0, 0.5);
   top: 0;
   left: 0;
   display: flex;
@@ -39,7 +39,7 @@
     height: 100%;
     opacity: 1;
     transition: all 0.5s linear;
-    background: #e7e4e7;
+    background: #ffffff;
     display: flex;
     flex-direction: column;
     position: relative;
