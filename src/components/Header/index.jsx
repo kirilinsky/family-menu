@@ -1,4 +1,3 @@
-import React from "react";
 import styles from "./assets/header.module.scss";
 import table from "./assets/table.svg";
 
@@ -17,8 +16,8 @@ import {
 const Header = () => {
   const [orders] = useAtom(orderAtom);
   const [tableNumber] = useAtom(tableNumberAtom);
-  const [_, set_mobile] = useAtom(mobileMenuAtom);
-  const [__, set_mobileqr] = useAtom(qrMobileAtom);
+  const [, set_mobile] = useAtom(mobileMenuAtom);
+  const [, set_mobileqr] = useAtom(qrMobileAtom);
   const openMobile = () => {
     set_mobile("mobile will-opened");
     setTimeout(() => {
