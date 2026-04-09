@@ -5,7 +5,7 @@ const SubTotal = ({ item }) => {
     <div className="order-reciept-cell">
       <div className="order-reciept-cell-row">
         <div style={{ textAlign: "center", flexGrow: 1 }}>{item.title}</div>
-        <span>${item.price}</span>
+        <span>€{item.price}</span>
       </div>
       <Computable item={item} />
     </div>

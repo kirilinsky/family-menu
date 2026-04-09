@@ -24,14 +24,23 @@
   font-weight: bold;
   font-size: 13.5px;
   display: flex;
+  flex-direction: column;
   width: 60px;
   height: 60px;
   align-items: center;
+  justify-content: center;
   margin-right: 10px;
   img {
     height: 16px;
     margin-left: 9px;
   }
+}
+
+.waiter {
+  font-size: 10px;
+  font-weight: 400;
+  color: #888;
+  margin-bottom: 2px;
 }
 
 .mobile {

@@ -8,6 +8,7 @@ import qr from "./assets/qr-code.svg";
 import { useAtom } from "jotai";
 import {
   tableNumberAtom,
+  waiterAtom,
   mobileMenuAtom,
   qrMobileAtom,
   orderAtom,
@@ -16,6 +17,7 @@ import {
 const Header = () => {
   const [orders] = useAtom(orderAtom);
   const [tableNumber] = useAtom(tableNumberAtom);
+  const [waiter] = useAtom(waiterAtom);
   const [, set_mobile] = useAtom(mobileMenuAtom);
   const [, set_mobileqr] = useAtom(qrMobileAtom);
   const openMobile = () => {
@@ -36,6 +38,7 @@ const Header = () => {
 
       <div className={styles.header_wrap}>
         <div className={styles.name}>
+          {waiter && <span className={styles.waiter}>{waiter}</span>}
           {tableNumber || "000"} <img src={table} alt="table" />
         </div>{" "}
         <div className={styles.mobile}>

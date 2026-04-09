@@ -1,6 +1,9 @@
 import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 
-export const tableNumberAtom = atom("001");
+export const tableNumberAtom = atomWithStorage("tableNumber", "");
+export const waiterAtom = atomWithStorage("waiter", "");
+export const isAuthorizedAtom = atomWithStorage("isAuthorized", false);
 
 export const orderAtom = atom([]);
 

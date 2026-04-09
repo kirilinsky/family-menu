@@ -33,7 +33,7 @@ const Computable = ({ item }) => {
       <button onClick={increment} className="order-reciept-cell-row-button">
         <img src={plus} alt="plus" />
       </button>
-      ${item.quantity * item.price}
+      €{item.quantity * item.price}
     </div>
   );
 };

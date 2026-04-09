@@ -32,7 +32,7 @@ const Order = () => {
               </CSSTransition>
             ))}
           </TransitionGroup>
-          <div className="order-reciept-total">Total: ${total}</div>
+          <div className="order-reciept-total">Total: €{total}</div>
           <button className="order-reciept-button" onClick={clearOrder}>
             Clear
           </button>

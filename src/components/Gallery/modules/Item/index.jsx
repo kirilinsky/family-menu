@@ -21,7 +21,7 @@ const Item = ({ item }) => {
       <div className="item-info">
         <div className="item-info-terms">
           <span> {item.title}</span>
-          <span> {item.price}</span>
+          <span>€{item.price}</span>
         </div>
         <div className="item-info-control">
           <button onClick={() => addItem(item)}>Add</button>
