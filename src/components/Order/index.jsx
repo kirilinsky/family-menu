@@ -9,10 +9,9 @@ const Order = () => {
   const [orders, setOrder] = useAtom(orderAtom);
 
   const total = useMemo(() => {
-    return orders.reduce(
-      (acc, item) => (acc += +item.price * item.quantity),
-      0
-    );
+    return orders
+      .reduce((acc, item) => (acc += +item.price * item.quantity), 0)
+      .toFixed(2);
   }, [orders]);
   const clearOrder = () => {
     setOrder([]);
