@@ -1,5 +1,3 @@
-import React from "react";
-
 import "./mobileMenu.scss";
 
 /* jotai */
@@ -26,7 +24,7 @@ const MobileMenu = () => {
         </div>
         <button className="mobile-menu-close trigger" onClick={closeMenu}>
           &times;
-        </button>{" "}
+        </button>
       </div>
       ;
     </div>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import "./order.scss";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 /* jotai */

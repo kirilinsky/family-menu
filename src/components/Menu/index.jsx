@@ -1,11 +1,9 @@
-import React from "react";
-import Gallery from "../Gallery"; 
+import Gallery from "../Gallery";
 import "./menu.scss";
 import Sidebar from "../Sidebar";
 /* jotai */
 import { useAtom } from "jotai";
 import { orderAtom } from "../../Atoms";
-
 
 const Menu = () => {
   const [order] = useAtom(orderAtom);

@@ -1,4 +1,3 @@
-import React from "react";
 import QR from "../Qr";
 import "./qrMobile.scss";
 
