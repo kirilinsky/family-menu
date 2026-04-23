@@ -4,6 +4,7 @@ import "./mobileMenu.scss";
 import { useAtom } from "jotai";
 import { mobileMenuAtom } from "../../Atoms";
 import Order from "../Order";
+import CalendarWrapper from "../CalendarWrapper";
 
 const MobileMenu = () => {
   const [mobile, set_mobile] = useAtom(mobileMenuAtom);
@@ -22,6 +23,7 @@ const MobileMenu = () => {
         <div className="mobile-menu-order">
           <Order />
         </div>
+        <CalendarWrapper/>
         <button className="mobile-menu-close trigger" onClick={closeMenu}>
           &times;
         </button>
