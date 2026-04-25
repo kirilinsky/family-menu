@@ -1,6 +1,6 @@
 import React from "react";
-import { CalendarNav } from "react-calendar-datetime/modules";
-import { Calendar, CalendarDays, createTheme } from "react-calendar-datetime";
+import { CalendarNav, CalendarDays } from "react-calendar-datetime/modules";
+import { Calendar, createTheme } from "react-calendar-datetime";
 
 const orderTheme = createTheme(
   {
@@ -21,9 +21,9 @@ const orderTheme = createTheme(
 const CalendarWrapper = () => {
   return (
     <div className="calendar-wrap">
-      <Calendar readonly value={new Date()} theme={orderTheme}>
-        <CalendarNav showSelectedMonthLabel />
-        <CalendarDays preventUnselect hideOtherMonths />
+      <Calendar readOnly value={new Date()} theme={orderTheme}>
+        <CalendarNav showNowTime monthLabel yearLabel/>
+        <CalendarDays currentMonthOnly fixedRows={false} blockNavigation />
       </Calendar>
     </div>
   );
