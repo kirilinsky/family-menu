@@ -22,7 +22,7 @@ const CalendarWrapper = () => {
   return (
     <div className="calendar-wrap">
       <Calendar readOnly value={new Date()} theme={orderTheme}>
-        <CalendarNav showNowTime monthLabel yearLabel/>
+        <CalendarNav showNowTime monthLabel yearLabel />
         <CalendarDays currentMonthOnly fixedRows={false} blockNavigation />
       </Calendar>
     </div>
