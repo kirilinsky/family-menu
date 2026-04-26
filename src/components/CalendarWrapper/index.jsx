@@ -1,6 +1,6 @@
+import { Calendar, createTheme } from "@dateforge/react-calendar";
+import { CalendarDays, CalendarNav } from "@dateforge/react-calendar/modules";
 import React from "react";
-import { CalendarNav, CalendarDays } from "react-calendar-datetime/modules";
-import { Calendar, createTheme } from "react-calendar-datetime";
 
 const orderTheme = createTheme({
   accent: "#fefefe",
