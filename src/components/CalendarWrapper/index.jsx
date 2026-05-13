@@ -5,6 +5,8 @@ import React from "react";
 const orderTheme = createTheme({
   accent: "#fefefe",
   backdrop: "#ffffff",
+  activeText: "#fff",
+  todayDot: "#fff",
   highlight: "#523637",
   tone: "#f4f4f5",
   text: "#18181b",
@@ -20,7 +22,7 @@ const CalendarWrapper = () => {
     <div className="calendar-wrap">
       <Calendar readOnly value={new Date()} theme={orderTheme}>
         <CalendarNav showNowTime monthLabel yearLabel />
-        <CalendarDays currentMonthOnly fixedRows={false} blockNavigation />
+        <CalendarDays boldWeekends currentMonthOnly fixedRows={false} blockNavigation />
       </Calendar>
     </div>
   );
