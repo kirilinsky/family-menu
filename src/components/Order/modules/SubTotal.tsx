@@ -1,6 +1,6 @@
 import Computable from "./Computable";
 
-const SubTotal = ({ item }) => {
+const SubTotal = ({ item }: { item: any }) => {
   return (
     <div className="order-reciept-cell">
       <div className="order-reciept-cell-row">

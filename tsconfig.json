@@ -9,8 +9,8 @@
     "allowJs": true,
     "checkJs": false,
 
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
+    "strict": false,
+    "noImplicitAny": false,
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
 

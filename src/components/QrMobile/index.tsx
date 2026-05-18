@@ -8,8 +8,9 @@ import { qrMobileAtom } from "../../Atoms";
 const QRMobile = () => {
   const [mobileqr, set_mobile] = useAtom(qrMobileAtom);
 
-  const closeMenu = (e) => {
-    if (e.target.classList.contains("trigger")) {
+  const closeMenu = (e: React.MouseEvent<Element>) => {
+    e.stopPropagation();
+    if (e?.currentTarget.classList.contains("trigger")) {
       set_mobile("mobileqr will-closed");
       setTimeout(() => {
         set_mobile("mobileqr closed");
