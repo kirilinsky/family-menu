@@ -47,9 +47,9 @@ export const categories = [
       },
       {
         id: "9f3c1a52-6e84-4b27-8d11-2a7e90b3cf41",
-        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Penne_all%27arrabbiata.jpg/640px-Penne_all%27arrabbiata.jpg",
+        img: "https://italianchef.com/wp-content/uploads/2017/12/PenneArrabiata600.jpg",
         title: "Pasta all'Arrabbiata",
-        price: "13.20",
+        price: "13.30",
       },
     ],
   },
