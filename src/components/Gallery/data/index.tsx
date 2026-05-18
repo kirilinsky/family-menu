@@ -45,6 +45,12 @@ export const categories = [
         title: "Coq au Vin",
         price: "22.55",
       },
+      {
+        id: "9f3c1a52-6e84-4b27-8d11-2a7e90b3cf41",
+        img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Penne_all%27arrabbiata.jpg/640px-Penne_all%27arrabbiata.jpg",
+        title: "Pasta all'Arrabbiata",
+        price: "13.20",
+      },
     ],
   },
   {
