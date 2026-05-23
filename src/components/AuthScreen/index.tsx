@@ -76,9 +76,7 @@ const AuthScreen = () => {
             {WAITERS.map((w) => (
               <button
                 key={w}
-                className={`${styles.chip} ${
-                  selectedWaiter === w ? styles.chip_active : ""
-                }`}
+                className={`${styles.chip} ${selectedWaiter === w ? styles.chip_active : ""}`}
                 onClick={() => {
                   setSelectedWaiter(w);
                   setError("");
@@ -97,11 +95,7 @@ const AuthScreen = () => {
 
         {error && <div className={styles.error}>{error}</div>}
 
-        <button
-          className={styles.submit}
-          onClick={handleStart}
-          disabled={!selectedWaiter}
-        >
+        <button className={styles.submit} onClick={handleStart} disabled={!selectedWaiter}>
           Open Shift
         </button>
       </div>

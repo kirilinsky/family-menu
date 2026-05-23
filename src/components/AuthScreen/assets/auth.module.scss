@@ -57,7 +57,9 @@
   color: #ccc;
   font-size: 14px;
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 
   &:hover {
     border-color: #555;
@@ -72,7 +74,6 @@
   }
 }
 
- 
 .picker {
   display: flex;
   align-items: center;
@@ -92,7 +93,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, color 0.15s;
+  transition:
+    background 0.15s,
+    color 0.15s;
   user-select: none;
 
   &:first-child {
@@ -135,11 +138,11 @@
   position: absolute;
 }
 
- .from_right {
+.from_right {
   animation: slide-from-right 0.22s cubic-bezier(0.25, 0.8, 0.35, 1) forwards;
 }
 
- .from_left {
+.from_left {
   animation: slide-from-left 0.22s cubic-bezier(0.25, 0.8, 0.35, 1) forwards;
 }
 
@@ -165,7 +168,6 @@
   }
 }
 
- 
 .error {
   color: #e05a5a;
   font-size: 13px;

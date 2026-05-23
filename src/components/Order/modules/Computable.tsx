@@ -8,10 +8,10 @@ const Computable = ({ item }: { item: OrderItem }) => {
   const [orders, setOrders] = useAtom(orderAtom);
 
   const decrement = () => {
-    setOrders(orders.map((x) => x.id === item.id ? { ...x, quantity: x.quantity - 1 } : x));
+    setOrders(orders.map((x) => (x.id === item.id ? { ...x, quantity: x.quantity - 1 } : x)));
   };
   const increment = () => {
-    setOrders(orders.map((x) => x.id === item.id ? { ...x, quantity: x.quantity + 1 } : x));
+    setOrders(orders.map((x) => (x.id === item.id ? { ...x, quantity: x.quantity + 1 } : x)));
   };
   const cut = () => {
     setOrders(orders.filter((x) => x.id !== item.id));

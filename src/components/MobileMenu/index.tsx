@@ -22,7 +22,7 @@ const MobileMenu = () => {
         <div className="mobile-menu-order">
           <Order />
         </div>
-        <CalendarWrapper/>
+        <CalendarWrapper />
         <button className="mobile-menu-close trigger" onClick={closeMenu}>
           &times;
         </button>

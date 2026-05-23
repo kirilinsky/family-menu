@@ -26,7 +26,9 @@
       cursor: pointer;
       white-space: nowrap;
       margin-bottom: -1px;
-      transition: color 0.15s, border-color 0.15s;
+      transition:
+        color 0.15s,
+        border-color 0.15s;
       &:hover {
         color: #09090b;
       }
@@ -55,8 +57,7 @@
       gap: 20px 15px;
     }
     @media screen and (max-width: 685px) {
-        grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
     }
   }
 }
- 

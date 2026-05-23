@@ -11,7 +11,7 @@ const Item = ({ item }: ItemProps) => {
 
   const addItem = (item: Omit<OrderItem, "quantity">) => {
     if (order.find((x) => x.id === item.id)) {
-      setOrder(order.map((x) => x.id === item.id ? { ...x, quantity: x.quantity + 1 } : x));
+      setOrder(order.map((x) => (x.id === item.id ? { ...x, quantity: x.quantity + 1 } : x)));
     } else {
       setOrder([...order, { ...item, quantity: 1 }]);
     }

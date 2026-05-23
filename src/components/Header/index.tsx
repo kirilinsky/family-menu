@@ -6,13 +6,7 @@ import qr from "./assets/qr-code.svg";
 /* jotai */
 
 import { useAtom } from "jotai";
-import {
-  tableNumberAtom,
-  waiterAtom,
-  mobileMenuAtom,
-  qrMobileAtom,
-  orderAtom,
-} from "../../Atoms";
+import { tableNumberAtom, waiterAtom, mobileMenuAtom, qrMobileAtom, orderAtom } from "../../Atoms";
 
 const Header = () => {
   const [orders] = useAtom(orderAtom);
