@@ -21,7 +21,7 @@ const Gallery = () => {
         ))}
       </div>
       <div className="gallery-grid">
-        {active.items.map((item) => (
+        {active?.items.map((item) => (
           <Item key={item.id} item={item} />
         ))}
       </div>

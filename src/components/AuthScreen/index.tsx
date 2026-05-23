@@ -6,13 +6,13 @@ import styles from "./assets/auth.module.scss";
 const WAITERS = ["Alex", "Maria", "Pier", "Kate", "Leon", "John", "Tahita"];
 const TOTAL_TABLES = 25;
 
-const TablePicker = ({ value, onChange }) => {
+const TablePicker = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
   const [animKey, setAnimKey] = useState(0);
   const [animDir, setAnimDir] = useState("right");
 
   const current = parseInt(value, 10) || 1;
 
-  const go = (dir) => {
+  const go = (dir: "left" | "right") => {
     let next;
     if (dir === "right") {
       next = current >= TOTAL_TABLES ? 1 : current + 1;

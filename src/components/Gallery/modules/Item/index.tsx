@@ -1,12 +1,15 @@
-import React from "react";
 import "./item.scss";
-/* jotai */
 import { useAtom } from "jotai";
-import { orderAtom } from "../../../../Atoms";
-const Item = ({ item }) => {
+import { orderAtom, type OrderItem } from "../../../../Atoms";
+
+type ItemProps = {
+  item: Omit<OrderItem, "quantity">;
+};
+
+const Item = ({ item }: ItemProps) => {
   const [order, setOrder] = useAtom(orderAtom);
 
-  const addItem = (item) => {
+  const addItem = (item: Omit<OrderItem, "quantity">) => {
     if (order.find((x) => x.id === item.id)) {
       setOrder(order.map((x) => x.id === item.id ? { ...x, quantity: x.quantity + 1 } : x));
     } else {

@@ -1,12 +1,10 @@
-import React from "react";
 import minus from "../assets/minus.svg";
 import plus from "../assets/plus.svg";
 import close from "../assets/close.svg";
-/* jotai */
 import { useAtom } from "jotai";
-import { orderAtom } from "../../../Atoms";
+import { orderAtom, type OrderItem } from "../../../Atoms";
 
-const Computable = ({ item }) => {
+const Computable = ({ item }: { item: OrderItem }) => {
   const [orders, setOrders] = useAtom(orderAtom);
 
   const decrement = () => {
@@ -33,7 +31,7 @@ const Computable = ({ item }) => {
       <button onClick={increment} className="order-reciept-cell-row-button">
         <img src={plus} alt="plus" />
       </button>
-      €{item.quantity * item.price}
+      €{(item.quantity * parseFloat(item.price)).toFixed(2)}
     </div>
   );
 };

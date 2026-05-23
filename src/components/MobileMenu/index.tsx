@@ -1,6 +1,5 @@
+import type { MouseEvent } from "react";
 import "./mobileMenu.scss";
-
-/* jotai */
 import { useAtom } from "jotai";
 import { mobileMenuAtom } from "../../Atoms";
 import Order from "../Order";
@@ -9,8 +8,8 @@ import CalendarWrapper from "../CalendarWrapper";
 const MobileMenu = () => {
   const [mobile, set_mobile] = useAtom(mobileMenuAtom);
 
-  const closeMenu = (e) => {
-    if (e.target.classList.contains("trigger")) {
+  const closeMenu = (e: MouseEvent<HTMLElement>) => {
+    if ((e.target as HTMLElement).classList.contains("trigger")) {
       set_mobile("mobile will-closed");
       setTimeout(() => {
         set_mobile("mobile closed");
