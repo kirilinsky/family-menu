@@ -1,104 +1,71 @@
-/* Design tokens — from DESIGN.md ("Pure Gastronomy") */
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design tokens — from DESIGN.md ("Pure Gastronomy"),
+ * mapped to shadcn/ui CSS variable convention.
+ */
 :root {
-  /* Color — surfaces */
-  --surface: #f7f9fb;
+  /* shadcn semantic tokens */
+  --background: #f7f9fb; /* surface */
+  --foreground: #191c1e; /* on-surface */
+  --card: #ffffff; /* surface-container-lowest */
+  --card-foreground: #191c1e;
+  --popover: #ffffff;
+  --popover-foreground: #191c1e;
+  --primary: #064e3b; /* primary-container (Forest Green, prose button color) */
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9; /* slate-100 (prose: chips) */
+  --secondary-foreground: #334155; /* slate-700 */
+  --muted: #f2f4f6; /* surface-container-low */
+  --muted-foreground: #64748b; /* slate-500 */
+  --accent: #f2f4f6;
+  --accent-foreground: #191c1e;
+  --destructive: #ba1a1a; /* error */
+  --destructive-foreground: #ffffff;
+  --border: #e2e8f0; /* slate-200 hairline */
+  --input: #e2e8f0;
+  --ring: #064e3b;
+
+  /* sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #404944; /* on-surface-variant */
+  --sidebar-primary: #064e3b;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #064e3b;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #064e3b;
+
+  /* Radius — DESIGN.md: default 4px, progressive rounding */
+  --radius: 0.25rem;
+
+  /* Extended Material-style palette from DESIGN.md frontmatter */
   --surface-dim: #d8dadc;
-  --surface-bright: #f7f9fb;
-  --surface-container-lowest: #ffffff;
-  --surface-container-low: #f2f4f6;
   --surface-container: #eceef0;
   --surface-container-high: #e6e8ea;
   --surface-container-highest: #e0e3e5;
-  --surface-variant: #e0e3e5;
-  --on-surface: #191c1e;
-  --on-surface-variant: #404944;
   --inverse-surface: #2d3133;
   --inverse-on-surface: #eff1f3;
   --outline: #707974;
   --outline-variant: #bfc9c3;
-  --background: #f7f9fb;
-  --on-background: #191c1e;
-
-  /* Color — primary (Forest Green) */
-  --primary: #003527;
-  --on-primary: #ffffff;
-  --primary-container: #064e3b;
+  --brand-primary-dark: #003527; /* primary (hover on buttons) */
   --on-primary-container: #80bea6;
   --inverse-primary: #95d3ba;
   --primary-fixed: #b0f0d6;
   --primary-fixed-dim: #95d3ba;
-  --on-primary-fixed: #002117;
-  --on-primary-fixed-variant: #0b513d;
-
-  /* Color — secondary (Slate) */
-  --secondary: #505f76;
-  --on-secondary: #ffffff;
+  --brand-secondary: #505f76;
   --secondary-container: #d0e1fb;
   --on-secondary-container: #54647a;
-  --secondary-fixed: #d3e4fe;
-  --secondary-fixed-dim: #b7c8e1;
-  --on-secondary-fixed: #0b1c30;
-  --on-secondary-fixed-variant: #38485d;
-
-  /* Color — tertiary */
   --tertiary: #4f1f19;
-  --on-tertiary: #ffffff;
   --tertiary-container: #6b342d;
   --on-tertiary-container: #ea9e93;
-  --tertiary-fixed: #ffdad5;
-  --tertiary-fixed-dim: #ffb4a9;
-  --on-tertiary-fixed: #380d08;
-  --on-tertiary-fixed-variant: #6e372f;
-
-  /* Color — error */
-  --error: #ba1a1a;
-  --on-error: #ffffff;
   --error-container: #ffdad6;
   --on-error-container: #93000a;
 
-  /* Semantic aliases (prose: hairline slate borders, muted text, pill chips) */
-  --border: #e2e8f0;
-  --text: var(--on-surface);
-  --text-muted: #64748b;
-  --chip-bg: #f1f5f9;
-  --chip-text: #334155;
-
-  /* Typography scale */
-  --font-sans:
-    var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
-  --type-display-size: 48px;
-  --type-display-weight: 700;
-  --type-display-leading: 1.1;
-  --type-display-tracking: -0.02em;
-  --type-headline-lg-size: 32px;
-  --type-headline-lg-mobile-size: 24px;
-  --type-headline-lg-weight: 600;
-  --type-headline-lg-leading: 1.2;
-  --type-headline-lg-tracking: -0.01em;
-  --type-headline-md-size: 24px;
-  --type-headline-md-weight: 600;
-  --type-headline-md-leading: 1.3;
-  --type-body-lg-size: 18px;
-  --type-body-lg-leading: 1.6;
-  --type-body-md-size: 16px;
-  --type-body-md-leading: 1.5;
-  --type-body-sm-size: 14px;
-  --type-body-sm-leading: 1.5;
-  --type-label-md-size: 14px;
-  --type-label-md-weight: 500;
-  --type-label-md-tracking: 0.01em;
-  --type-label-sm-size: 12px;
-  --type-label-sm-weight: 600;
-
-  /* Radius */
-  --radius-sm: 0.125rem;
-  --radius: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-full: 9999px;
-
-  /* Spacing */
+  /* Spacing / layout */
   --container-max: 1280px;
   --gutter: 24px;
   --margin-mobile: 16px;
@@ -107,22 +74,57 @@
   --stack-md: 16px;
   --stack-lg: 32px;
 
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* DESIGN.md scale: 2px / 4px / 6px / 8px / 12px */
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: calc(var(--radius) + 2px);
+  --radius-lg: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) + 8px);
+
+  --font-sans:
+    var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+
   /* Elevation (low-opacity, tonal layering) */
   --shadow-hover: 0 4px 6px -1px rgb(0 0 0 / 0.05);
   --shadow-floating: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 4px 10px -6px rgb(0 0 0 / 0.08);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: var(--background);
-  color: var(--text);
-  font-size: var(--type-body-md-size);
-  line-height: var(--type-body-md-leading);
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
 }
