@@ -1,7 +1,7 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.88);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -10,23 +10,24 @@
 }
 
 .card {
-  background: #1a1a1a;
-  border-radius: 16px;
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
   padding: 32px 28px;
   width: 100%;
   max-width: 480px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+  gap: var(--stack-lg);
+  box-shadow: var(--shadow-floating);
 }
 
 .title {
-  font-size: 22px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text);
   text-align: center;
-  letter-spacing: 0.5px;
 }
 
 .field {
@@ -38,7 +39,7 @@
 .label {
   font-size: 12px;
   font-weight: 600;
-  color: #666;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -46,30 +47,32 @@
 .grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--stack-sm);
 }
 
 .chip {
   padding: 8px 16px;
-  border-radius: 8px;
-  border: 1px solid #333;
-  background: #242424;
-  color: #ccc;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: var(--chip-bg);
+  color: var(--chip-text);
   font-size: 14px;
+  font-family: inherit;
   cursor: pointer;
   transition:
     border-color 0.15s,
+    background 0.15s,
     color 0.15s;
 
   &:hover {
-    border-color: #555;
-    color: #fff;
+    border-color: var(--outline);
+    color: var(--text);
   }
 
   &_active {
-    background: #e8b84b;
-    border-color: #e8b84b;
-    color: #111;
+    background: var(--primary-container);
+    border-color: var(--primary-container);
+    color: var(--on-primary);
     font-weight: 600;
   }
 }
@@ -84,9 +87,9 @@
 .picker_arrow {
   width: 44px;
   height: 56px;
-  background: #242424;
-  border: 1px solid #333;
-  color: #aaa;
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
   font-size: 28px;
   line-height: 1;
   cursor: pointer;
@@ -99,29 +102,29 @@
   user-select: none;
 
   &:first-child {
-    border-radius: 10px 0 0 10px;
+    border-radius: var(--radius) 0 0 var(--radius);
     border-right: none;
   }
   &:last-child {
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 var(--radius) var(--radius) 0;
     border-left: none;
   }
 
   &:hover {
-    background: #2e2e2e;
-    color: #e8b84b;
+    background: var(--surface-container-low);
+    color: var(--primary-container);
   }
   &:active {
-    background: #383838;
+    background: var(--surface-container);
   }
 }
 
 .picker_window {
   width: 90px;
   height: 56px;
-  background: #242424;
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
+  background: var(--surface-container-low);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,8 +135,7 @@
 .picker_num {
   font-size: 26px;
   font-weight: 700;
-  font-family: "Courier New", monospace;
-  color: #e8b84b;
+  color: var(--primary-container);
   letter-spacing: 4px;
   position: absolute;
 }
@@ -169,21 +171,22 @@
 }
 
 .error {
-  color: #e05a5a;
+  color: var(--error);
   font-size: 13px;
   text-align: center;
 }
 
 .submit {
   padding: 14px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   border: none;
-  background: #e8b84b;
-  color: #111;
+  background: var(--primary-container);
+  color: var(--on-primary);
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background 0.15s, opacity 0.15s;
 
   &:disabled {
     opacity: 0.3;
@@ -191,6 +194,6 @@
   }
 
   &:not(:disabled):hover {
-    opacity: 0.85;
+    background: var(--primary);
   }
 }

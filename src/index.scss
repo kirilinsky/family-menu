@@ -1,11 +1,13 @@
+@use "./styles/tokens";
+
 body {
   margin: 0;
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell",
-    "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #09090b;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
 }
 
 code {
@@ -16,6 +18,6 @@ code {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  background: #f4f4f5;
+  background: var(--background);
   position: relative;
 }

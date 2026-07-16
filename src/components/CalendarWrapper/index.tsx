@@ -2,19 +2,20 @@ import { Calendar, createTheme } from "@dateforge/react-calendar";
 import { CalendarDays, CalendarNav } from "@dateforge/react-calendar/modules";
 import React from "react";
 
+// Pure Gastronomy tokens (DESIGN.md) — library theme API needs raw values, not CSS vars
 const orderTheme = createTheme({
   accent: "#fefefe",
   backdrop: "#ffffff",
-  activeText: "#fff",
-  todayDot: "#fff",
-  highlight: "#523637",
-  tone: "#f4f4f5",
-  text: "#18181b",
-  stroke: "#e4e4e7",
-  shadow: "rgba(24, 24, 27, 0.08)",
-  disabled: "#a1a1aa",
-  weekend: "#7e4446",
-  range: "#f4f4f5",
+  activeText: "#ffffff",
+  todayDot: "#ffffff",
+  highlight: "#064e3b",
+  tone: "#f2f4f6",
+  text: "#191c1e",
+  stroke: "#e2e8f0",
+  shadow: "rgba(0, 0, 0, 0.05)",
+  disabled: "#94a3b8",
+  weekend: "#6b342d",
+  range: "#f2f4f6",
 });
 
 const CalendarWrapper = () => {

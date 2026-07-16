@@ -1,7 +1,7 @@
 .cell {
-  background: #ffffff;
-  border: 1px solid #e4e4e7;
-  border-radius: 8px;
+  background: var(--surface-container-lowest);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
 }
 .menu {
   width: 100%;

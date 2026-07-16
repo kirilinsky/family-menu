@@ -39,7 +39,8 @@
     height: 100%;
     opacity: 1;
     transition: all 0.5s linear;
-    background: #ffffff;
+    background: var(--surface-container-lowest);
+    box-shadow: var(--shadow-floating);
     display: flex;
     flex-direction: column;
     position: relative;
