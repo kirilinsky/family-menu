@@ -12,6 +12,6 @@ export default tseslint.config(
   },
   prettierConfig,
   {
-    ignores: ["dist/", "node_modules/"],
+    ignores: [".next/", "out/", "node_modules/", "next-env.d.ts"],
   }
 );
