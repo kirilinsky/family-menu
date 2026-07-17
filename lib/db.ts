@@ -43,6 +43,7 @@ async function ensureSchema(db: Client): Promise<void> {
         link TEXT,
         link_title TEXT,
         image_url TEXT,
+        image_prompt TEXT,
         created_at TEXT NOT NULL DEFAULT (datetime('now'))
       )`
     );

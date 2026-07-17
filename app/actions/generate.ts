@@ -173,10 +173,13 @@ async function getReferenceImageUrl(token: string): Promise<string> {
 }
 
 // Replicate URLs die within ~1 hour — persist the bytes to Vercel Blob.
-// Without BLOB_READ_WRITE_TOKEN (local dev) the temporary URL is returned as-is.
 async function persistImage(temporaryUrl: string): Promise<string> {
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    console.warn("BLOB_READ_WRITE_TOKEN not set — returning temporary Replicate URL");
+  if (!process.env.VERCEL_READ_WRITE_TOKEN) {
+    // In production a dying URL must never reach the DB — fail loudly.
+    if (process.env.VERCEL) {
+      throw new Error("Image storage not configured (VERCEL_READ_WRITE_TOKEN missing)");
+    }
+    console.warn("VERCEL_READ_WRITE_TOKEN not set — returning temporary Replicate URL");
     return temporaryUrl;
   }
   const image = await fetch(temporaryUrl);

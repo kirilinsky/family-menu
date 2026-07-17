@@ -31,6 +31,7 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [imagePrompt, setImagePrompt] = useState("");
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, startSaving] = useTransition();
   const router = useRouter();
@@ -65,6 +66,7 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
         link: String(fields.get("link") ?? ""),
         linkTitle: String(fields.get("linkTitle") ?? ""),
         imageUrl,
+        imagePrompt,
       });
       if (result.ok) {
         router.push(variant === "travel" ? "/travel-food" : "/domestic-food");
@@ -95,7 +97,10 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
           setSelectedCuisines(meta.cuisines);
           setTags((prev) => [...prev, ...meta.ingredients.filter((i) => !prev.includes(i))]);
         }}
-        onImage={setImageUrl}
+        onImage={(url, prompt) => {
+          setImageUrl(url);
+          setImagePrompt(prompt);
+        }}
       />
 
       {/* Block 2: info fields */}

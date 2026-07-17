@@ -22,6 +22,7 @@ export type SaveDishInput = {
   link: string;
   linkTitle: string;
   imageUrl: string;
+  imagePrompt: string;
 };
 
 export async function saveDish(input: SaveDishInput): Promise<ActionResult<number>> {
@@ -41,8 +42,8 @@ export async function saveDish(input: SaveDishInput): Promise<ActionResult<numbe
   const result = await db.execute({
     sql: `INSERT INTO dishes
       (type, status, name, country, city, category, cuisines, ingredients,
-       rating, tried_on, comment, link, link_title, image_url)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       rating, tried_on, comment, link, link_title, image_url, image_prompt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     args: [
       input.type,
       status,
@@ -58,6 +59,7 @@ export async function saveDish(input: SaveDishInput): Promise<ActionResult<numbe
       input.link.trim() || null,
       input.linkTitle.trim() || null,
       input.imageUrl || null,
+      input.imagePrompt.trim() || null,
     ],
   });
 

@@ -11,7 +11,7 @@ type ImageGeneratorProps = {
   categories: string[];
   cuisines: string[];
   onAutofill: (meta: Omit<DishMeta, "finalPrompt">) => void;
-  onImage: (url: string) => void;
+  onImage: (url: string, prompt: string) => void;
 };
 
 const ImageGenerator = ({ categories, cuisines, onAutofill, onImage }: ImageGeneratorProps) => {
@@ -41,7 +41,7 @@ const ImageGenerator = ({ categories, cuisines, onAutofill, onImage }: ImageGene
       const result = await generateDishImage(finalPrompt);
       if (result.ok) {
         setImageUrl(result.data);
-        onImage(result.data);
+        onImage(result.data, finalPrompt);
       } else {
         setError(result.error);
       }
