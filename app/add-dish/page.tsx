@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { listCategories } from "@/app/actions/categories";
+import { listCuisines } from "@/app/actions/cuisines";
 import AdminOnly from "@/components/AdminOnly";
 import DishForm from "@/components/DishForm";
 import PageLayout from "@/components/PageLayout";
@@ -16,12 +17,16 @@ export default async function AddDish({
 
   const { type } = await searchParams;
   const variant = type === "travel" ? "travel" : "domestic";
-  const categories = await listCategories();
+  const [categories, cuisines] = await Promise.all([listCategories(), listCuisines()]);
 
   return (
     <PageLayout title="Add Dish">
       <AdminOnly>
-        <DishForm variant={variant} categories={categories.map((c) => c.name)} />
+        <DishForm
+          variant={variant}
+          categories={categories.map((c) => c.name)}
+          cuisines={cuisines.map((c) => c.name)}
+        />
       </AdminOnly>
     </PageLayout>
   );

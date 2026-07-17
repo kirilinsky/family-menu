@@ -6,7 +6,10 @@ import { createClient, type Client } from "@libsql/client";
 let client: Client | null = null;
 let schemaReady: Promise<void> | null = null;
 
-const DEFAULT_CATEGORIES = ["Main Course", "Soup", "Salad", "Dessert", "Snack", "Drink"];
+const SEEDS: Record<string, string[]> = {
+  categories: ["Main Course", "Soup", "Salad", "Dessert", "Snack", "Drink"],
+  cuisines: ["Asian", "Lebanese", "Balkan", "Greek", "Serbian"],
+};
 
 function getClient(): Client {
   if (!client) {
@@ -24,20 +27,22 @@ function getClient(): Client {
 
 async function ensureSchema(db: Client): Promise<void> {
   schemaReady ??= (async () => {
-    await db.execute(
-      `CREATE TABLE IF NOT EXISTS categories (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL UNIQUE COLLATE NOCASE,
-        created_at TEXT NOT NULL DEFAULT (datetime('now'))
-      )`
-    );
-    const { rows } = await db.execute("SELECT COUNT(*) AS n FROM categories");
-    if (Number(rows[0].n) === 0) {
-      for (const name of DEFAULT_CATEGORIES) {
-        await db.execute({
-          sql: "INSERT INTO categories (name) VALUES (?)",
-          args: [name],
-        });
+    for (const [table, seeds] of Object.entries(SEEDS)) {
+      await db.execute(
+        `CREATE TABLE IF NOT EXISTS ${table} (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL UNIQUE COLLATE NOCASE,
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )`
+      );
+      const { rows } = await db.execute(`SELECT COUNT(*) AS n FROM ${table}`);
+      if (Number(rows[0].n) === 0) {
+        for (const name of seeds) {
+          await db.execute({
+            sql: `INSERT INTO ${table} (name) VALUES (?)`,
+            args: [name],
+          });
+        }
       }
     }
   })();

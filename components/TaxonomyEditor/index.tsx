@@ -2,30 +2,32 @@
 
 import { useState, useTransition } from "react";
 import { Check, Loader2, Pencil, Plus, Trash2, X } from "lucide-react";
-import {
-  createCategory,
-  deleteCategory,
-  renameCategory,
-  type Category,
-} from "@/app/actions/categories";
+import type { TaxonomyItem, TaxonomyResult } from "@/lib/taxonomy";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const CategoryEditor = ({ initial }: { initial: Category[] }) => {
-  const [categories, setCategories] = useState(initial);
+type TaxonomyEditorProps = {
+  title: string;
+  initial: TaxonomyItem[];
+  onCreate: (name: string) => Promise<TaxonomyResult>;
+  onRename: (id: number, name: string) => Promise<TaxonomyResult>;
+  onDelete: (id: number) => Promise<TaxonomyResult>;
+};
+
+const TaxonomyEditor = ({ title, initial, onCreate, onRename, onDelete }: TaxonomyEditorProps) => {
+  const [items, setItems] = useState(initial);
   const [newName, setNewName] = useState("");
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editName, setEditName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
-  const run = (action: () => Promise<{ ok: boolean } & Record<string, unknown>>) =>
+  const run = (action: () => Promise<TaxonomyResult>) =>
     startTransition(async () => {
       setError(null);
-      const result = (await action()) as
-        { ok: true; data: Category[] } | { ok: false; error: string };
+      const result = await action();
       if (result.ok) {
-        setCategories(result.data);
+        setItems(result.data);
         setNewName("");
         setEditingId(null);
       } else {
@@ -34,18 +36,18 @@ const CategoryEditor = ({ initial }: { initial: Category[] }) => {
     });
 
   return (
-    <section className="flex max-w-xl flex-col gap-4 rounded-lg border bg-card p-5">
-      <h2 className="text-lg font-semibold tracking-tight">Categories</h2>
+    <section className="flex w-full max-w-xl flex-col gap-4 rounded-lg border bg-card p-5">
+      <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
 
       <form
         className="flex gap-2"
         onSubmit={(e) => {
           e.preventDefault();
-          if (newName.trim()) run(() => createCategory(newName));
+          if (newName.trim()) run(() => onCreate(newName));
         }}
       >
         <Input
-          placeholder="New category…"
+          placeholder={`New ${title.toLowerCase().replace(/s$/, "")}…`}
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
         />
@@ -59,9 +61,9 @@ const CategoryEditor = ({ initial }: { initial: Category[] }) => {
       )}
 
       <ul className="flex flex-col divide-y">
-        {categories.map((category) => (
-          <li key={category.id} className="flex items-center gap-2 py-2">
-            {editingId === category.id ? (
+        {items.map((item) => (
+          <li key={item.id} className="flex items-center gap-2 py-2">
+            {editingId === item.id ? (
               <>
                 <Input
                   value={editName}
@@ -74,7 +76,7 @@ const CategoryEditor = ({ initial }: { initial: Category[] }) => {
                   variant="secondary"
                   aria-label="Save"
                   disabled={!editName.trim() || pending}
-                  onClick={() => run(() => renameCategory(category.id, editName))}
+                  onClick={() => run(() => onRename(item.id, editName))}
                 >
                   <Check />
                 </Button>
@@ -89,14 +91,14 @@ const CategoryEditor = ({ initial }: { initial: Category[] }) => {
               </>
             ) : (
               <>
-                <span className="flex-1 text-sm">{category.name}</span>
+                <span className="flex-1 text-sm">{item.name}</span>
                 <Button
                   size="icon-sm"
                   variant="ghost"
-                  aria-label={`Rename ${category.name}`}
+                  aria-label={`Rename ${item.name}`}
                   onClick={() => {
-                    setEditingId(category.id);
-                    setEditName(category.name);
+                    setEditingId(item.id);
+                    setEditName(item.name);
                   }}
                 >
                   <Pencil />
@@ -104,10 +106,10 @@ const CategoryEditor = ({ initial }: { initial: Category[] }) => {
                 <Button
                   size="icon-sm"
                   variant="ghost"
-                  aria-label={`Delete ${category.name}`}
+                  aria-label={`Delete ${item.name}`}
                   className="text-destructive hover:text-destructive"
                   disabled={pending}
-                  onClick={() => run(() => deleteCategory(category.id))}
+                  onClick={() => run(() => onDelete(item.id))}
                 >
                   <Trash2 />
                 </Button>
@@ -120,4 +122,4 @@ const CategoryEditor = ({ initial }: { initial: Category[] }) => {
   );
 };
 
-export default CategoryEditor;
+export default TaxonomyEditor;

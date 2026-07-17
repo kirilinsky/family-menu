@@ -14,13 +14,20 @@ import { cn } from "@/lib/utils";
 type DishFormProps = {
   variant: "domestic" | "travel";
   categories: string[];
+  cuisines: string[];
 };
 
-const DishForm = ({ variant, categories }: DishFormProps) => {
+const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
   const [rating, setRating] = useState(0);
   const [country, setCountry] = useState("");
+  const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+
+  const toggleCuisine = (cuisine: string) =>
+    setSelectedCuisines((prev) =>
+      prev.includes(cuisine) ? prev.filter((c) => c !== cuisine) : [...prev, cuisine]
+    );
 
   const addTag = () => {
     const tag = tagInput.trim();
@@ -90,6 +97,32 @@ const DishForm = ({ variant, categories }: DishFormProps) => {
                 />
               </button>
             ))}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Label>Cuisines</Label>
+          <input type="hidden" name="cuisines" value={selectedCuisines.join(",")} />
+          <div className="flex flex-wrap gap-2">
+            {cuisines.map((cuisine) => {
+              const active = selectedCuisines.includes(cuisine);
+              return (
+                <button
+                  key={cuisine}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => toggleCuisine(cuisine)}
+                  className={cn(
+                    "rounded-full px-3 py-1.5 text-sm transition-colors outline-none focus-visible:ring-[2px] focus-visible:ring-ring/50",
+                    active
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
+                  )}
+                >
+                  {cuisine}
+                </button>
+              );
+            })}
           </div>
         </div>
 

@@ -1,8 +1,14 @@
 import { redirect } from "next/navigation";
-import { listCategories } from "@/app/actions/categories";
+import {
+  createCategory,
+  deleteCategory,
+  listCategories,
+  renameCategory,
+} from "@/app/actions/categories";
+import { createCuisine, deleteCuisine, listCuisines, renameCuisine } from "@/app/actions/cuisines";
 import AdminOnly from "@/components/AdminOnly";
-import CategoryEditor from "@/components/CategoryEditor";
 import PageLayout from "@/components/PageLayout";
+import TaxonomyEditor from "@/components/TaxonomyEditor";
 import { getSession } from "@/lib/auth";
 
 export default async function Settings() {
@@ -10,12 +16,27 @@ export default async function Settings() {
   const session = await getSession();
   if (!session?.isAdmin) redirect("/");
 
-  const categories = await listCategories();
+  const [categories, cuisines] = await Promise.all([listCategories(), listCuisines()]);
 
   return (
     <PageLayout title="Settings">
       <AdminOnly>
-        <CategoryEditor initial={categories} />
+        <div className="flex flex-wrap items-start gap-8">
+          <TaxonomyEditor
+            title="Categories"
+            initial={categories}
+            onCreate={createCategory}
+            onRename={renameCategory}
+            onDelete={deleteCategory}
+          />
+          <TaxonomyEditor
+            title="Cuisines"
+            initial={cuisines}
+            onCreate={createCuisine}
+            onRename={renameCuisine}
+            onDelete={deleteCuisine}
+          />
+        </div>
       </AdminOnly>
     </PageLayout>
   );
