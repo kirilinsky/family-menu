@@ -3,10 +3,10 @@ import DishGrid from "@/components/DishGrid";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import { getSession } from "@/lib/auth";
-import { TRAVEL_DISHES } from "@/lib/dishes";
+import { listDishes } from "@/lib/dishes-db";
 
 export default async function TravelFood() {
-  const session = await getSession();
+  const [session, dishes] = await Promise.all([getSession(), listDishes("travel")]);
 
   return (
     <PageLayout
@@ -19,7 +19,7 @@ export default async function TravelFood() {
         ) : undefined
       }
     >
-      <DishGrid dishes={TRAVEL_DISHES} />
+      <DishGrid dishes={dishes} withStatusFilter />
     </PageLayout>
   );
 }

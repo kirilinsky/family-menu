@@ -1,8 +1,6 @@
 import "server-only";
 import { createClient, type Client } from "@libsql/client";
 
-// Turso in production (TURSO_DATABASE_URL + TURSO_AUTH_TOKEN),
-// plain local SQLite file when the env vars are absent.
 let client: Client | null = null;
 let schemaReady: Promise<void> | null = null;
 
@@ -27,6 +25,24 @@ function getClient(): Client {
 
 async function ensureSchema(db: Client): Promise<void> {
   schemaReady ??= (async () => {
+    await db.execute(
+      `CREATE TABLE IF NOT EXISTS dishes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        type TEXT NOT NULL CHECK (type IN ('domestic', 'travel')),
+        name TEXT NOT NULL,
+        country TEXT NOT NULL DEFAULT '',
+        category TEXT NOT NULL DEFAULT '',
+        cuisines TEXT NOT NULL DEFAULT '[]',
+        ingredients TEXT NOT NULL DEFAULT '[]',
+        rating INTEGER,
+        tried_on TEXT,
+        comment TEXT,
+        link TEXT,
+        link_title TEXT,
+        image_url TEXT,
+        created_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`
+    );
     for (const [table, seeds] of Object.entries(SEEDS)) {
       await db.execute(
         `CREATE TABLE IF NOT EXISTS ${table} (

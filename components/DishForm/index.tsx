@@ -18,6 +18,7 @@ type DishFormProps = {
 };
 
 const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
+  const [status, setStatus] = useState<"want" | "tried">("tried");
   const [rating, setRating] = useState(0);
   const [country, setCountry] = useState("");
   const [category, setCategory] = useState("");
@@ -92,27 +93,56 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
           </div>
         )}
 
-        <div className="flex flex-col gap-2">
-          <Label>Rating</Label>
-          <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map((value) => (
-              <button
-                key={value}
-                type="button"
-                aria-label={`${value} of 5`}
-                onClick={() => setRating(value === rating ? 0 : value)}
-                className="rounded-sm p-0.5 outline-none focus-visible:ring-[2px] focus-visible:ring-ring/50"
-              >
-                <Star
-                  className={cn(
-                    "size-6 text-muted-foreground/40 transition-colors",
-                    value <= rating && "fill-amber-400 text-amber-400"
-                  )}
-                />
-              </button>
-            ))}
+        {variant === "travel" && (
+          <div className="flex flex-col gap-2">
+            <Label>Status</Label>
+            <input type="hidden" name="status" value={status} />
+            <div className="flex gap-2">
+              {(
+                [
+                  { value: "want", label: "Want to try" },
+                  { value: "tried", label: "Tried" },
+                ] as const
+              ).map(({ value, label }) => (
+                <Button
+                  key={value}
+                  type="button"
+                  size="sm"
+                  variant={status === value ? "secondary" : "ghost"}
+                  aria-pressed={status === value}
+                  onClick={() => setStatus(value)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Rating exists only for tasted dishes — a wishlist item has none */}
+        {(variant === "domestic" || status === "tried") && (
+          <div className="flex flex-col gap-2">
+            <Label>Rating</Label>
+            <div className="flex gap-1">
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button
+                  key={value}
+                  type="button"
+                  aria-label={`${value} of 5`}
+                  onClick={() => setRating(value === rating ? 0 : value)}
+                  className="rounded-sm p-0.5 outline-none focus-visible:ring-[2px] focus-visible:ring-ring/50"
+                >
+                  <Star
+                    className={cn(
+                      "size-6 text-muted-foreground/40 transition-colors",
+                      value <= rating && "fill-amber-400 text-amber-400"
+                    )}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-col gap-2">
           <Label>Cuisines</Label>
