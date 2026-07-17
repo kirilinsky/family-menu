@@ -213,7 +213,7 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
         <div className="flex flex-col gap-2">
           <Label>Cuisines</Label>
           <input type="hidden" name="cuisines" value={selectedCuisines.join(",")} />
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {availableCuisines.map((cuisine) => {
               const active = selectedCuisines.includes(cuisine);
               return (
@@ -223,7 +223,7 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
                   aria-pressed={active}
                   onClick={() => toggleCuisine(cuisine)}
                   className={cn(
-                    "rounded-full px-3 py-1.5 text-sm transition-colors outline-none focus-visible:ring-[2px] focus-visible:ring-ring/50",
+                    "rounded-full px-2.5 py-1 text-xs transition-colors outline-none focus-visible:ring-[2px] focus-visible:ring-ring/50",
                     active
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
@@ -239,11 +239,11 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
         <div className="flex flex-col gap-2">
           <Label htmlFor="dish-tags">Ingredients</Label>
           {tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="flex items-center gap-1 rounded-full bg-secondary py-1 pr-1.5 pl-3 text-sm text-secondary-foreground"
+                  className="flex items-center gap-1 rounded-full bg-secondary py-1 pr-1 pl-2.5 text-xs text-secondary-foreground"
                 >
                   {tag}
                   <button
@@ -252,7 +252,7 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
                     onClick={() => setTags(tags.filter((t) => t !== tag))}
                     className="rounded-full p-0.5 hover:bg-foreground/10"
                   >
-                    <X className="size-3.5" />
+                    <X className="size-3" />
                   </button>
                 </span>
               ))}

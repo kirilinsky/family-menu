@@ -25,42 +25,42 @@ const DishCard = ({ dish }: { dish: Dish }) => (
         </span>
       )}
       {dish.status === "want" ? (
-        <span className="absolute top-4 right-4 rounded-full bg-card px-3 py-1.5 text-sm font-semibold text-muted-foreground">
+        <span className="absolute top-3 right-3 rounded-full bg-card px-2.5 py-1 text-xs font-semibold text-muted-foreground">
           Want to try
         </span>
       ) : (
         dish.rating != null && (
-          <span className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-sm font-semibold">
-            <Star className="size-4 fill-amber-400 text-amber-400" />
+          <span className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-card px-2.5 py-1 text-xs font-semibold">
+            <Star className="size-3.5 fill-amber-400 text-amber-400" />
             {dish.rating}
           </span>
         )
       )}
     </div>
-    <div className="flex flex-1 flex-col gap-4 p-5">
+    <div className="flex flex-1 flex-col gap-3 p-4">
       <div className="flex items-start justify-between gap-4">
-        <span className="text-xs font-semibold tracking-widest uppercase text-muted-foreground">
+        <span className="text-[11px] font-semibold tracking-widest uppercase text-muted-foreground">
           {dish.category}
         </span>
         {dish.triedOn && (
-          <span className="shrink-0 text-sm font-medium text-secondary-foreground">
+          <span className="shrink-0 text-xs font-medium text-secondary-foreground">
             {dish.triedOn}
           </span>
         )}
       </div>
-      <h3 className="text-2xl font-semibold tracking-tight">{dish.name}</h3>
+      <h3 className="text-lg font-semibold tracking-tight">{dish.name}</h3>
       {dish.ingredients.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5">
           {dish.ingredients.slice(0, 4).map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground"
+              className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground"
             >
               {tag}
             </span>
           ))}
           {dish.ingredients.length > 4 && (
-            <span className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground">
+            <span className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
               +{dish.ingredients.length - 4}
             </span>
           )}

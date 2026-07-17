@@ -16,11 +16,11 @@ const Field = ({ label, children }: { label: string; children: React.ReactNode }
 );
 
 const ChipList = ({ items }: { items: string[] }) => (
-  <div className="flex flex-wrap gap-2">
+  <div className="flex flex-wrap gap-1.5">
     {items.map((item) => (
       <span
         key={item}
-        className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground"
+        className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground"
       >
         {item}
       </span>
@@ -41,7 +41,7 @@ export default async function DishDetail({ params }: { params: Promise<{ id: str
   const backHref = dish.type === "travel" ? "/travel-food" : "/domestic-food";
 
   return (
-    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-8 md:px-10">
+    <main className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-6 sm:px-6 sm:py-8 md:px-10">
       <Link
         href={backHref}
         className="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground"
@@ -71,7 +71,7 @@ export default async function DishDetail({ params }: { params: Promise<{ id: str
               </span>
             )}
           </div>
-          <h1 className="text-3xl font-semibold tracking-tight">{dish.name}</h1>
+          <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{dish.name}</h1>
         </div>
 
         {/* Right half: everything we know about the dish */}
@@ -83,13 +83,13 @@ export default async function DishDetail({ params }: { params: Promise<{ id: str
               </span>
             )}
             {dish.status === "want" ? (
-              <span className="rounded-full bg-secondary px-3 py-1 text-sm font-medium text-secondary-foreground">
+              <span className="rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground">
                 Want to try
               </span>
             ) : (
               dish.rating != null && (
-                <span className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-sm font-semibold text-secondary-foreground">
-                  <Star className="size-4 fill-amber-400 text-amber-400" />
+                <span className="flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-xs font-semibold text-secondary-foreground">
+                  <Star className="size-3.5 fill-amber-400 text-amber-400" />
                   {dish.rating}
                 </span>
               )

@@ -30,7 +30,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
       className={`${inter.variable} notranslate`}
     >
-      <body className="notranslate flex" translate="no">
+      <body className="notranslate flex flex-col md:flex-row" translate="no">
         <ClerkProvider appearance={{ theme: shadcn }}>
           <Sidebar isAdmin={session?.isAdmin ?? false} />
           <div className="min-h-screen flex-1">{children}</div>
