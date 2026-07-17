@@ -82,9 +82,12 @@ export async function improveDishPrompt(
         "deep golden-amber color, glazed with honey, generously sprinkled with toasted sesame seeds, " +
         "glossy sticky surface'\n" +
         "Rules: describe only the food itself — never plate, bowl, background, lighting, camera. " +
-        "No composition or layout words (arranged, positioned, stacked, cluster, centered, row) — " +
-        "the reference image dictates layout. Concrete colors and textures. " +
-        "One phrase, comma-separated clauses, 25-50 words, no line breaks.\n\n" +
+        "No composition or layout words (arranged, positioned, stacked, cluster, centered, row). " +
+        "Concrete colors and textures. " +
+        "Preserve EVERY concrete detail the user mentions — specific ingredients, cooking style, " +
+        "doneness, sauces, toppings, colors ('with crispy cheese crust', 'extra dill'): keep them " +
+        "all in the phrase, expand around them, never drop or genericize them. " +
+        "One phrase, comma-separated clauses, 25-60 words, no line breaks.\n\n" +
         "name — the dish display name in English, Title Case, short (e.g. 'Borscht', " +
         "'Moroccan Chebakia').\n" +
         "ingredients — 3-6 main ingredients of the dish, short English names, Capitalized.\n" +
