@@ -51,7 +51,7 @@ const DishCard = ({ dish }: { dish: Dish }) => (
       <h3 className="text-2xl font-semibold tracking-tight">{dish.name}</h3>
       {dish.ingredients.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {dish.ingredients.map((tag) => (
+          {dish.ingredients.slice(0, 4).map((tag) => (
             <span
               key={tag}
               className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground"
@@ -59,6 +59,11 @@ const DishCard = ({ dish }: { dish: Dish }) => (
               {tag}
             </span>
           ))}
+          {dish.ingredients.length > 4 && (
+            <span className="rounded-full bg-secondary px-3 py-1.5 text-sm text-secondary-foreground">
+              +{dish.ingredients.length - 4}
+            </span>
+          )}
         </div>
       )}
       <Button asChild size="sm" className="mt-auto self-start">
