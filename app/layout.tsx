@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Sidebar from "@/components/Sidebar";
+import { getSession } from "@/lib/auth";
 import "./globals.css";
 
 const inter = Inter({
@@ -13,11 +14,13 @@ export const metadata: Metadata = {
   description: "Family menu",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const session = await getSession();
+
   return (
     <html lang="ru" className={inter.variable}>
       <body className="flex">
-        <Sidebar />
+        <Sidebar isAdmin={session?.isAdmin ?? false} />
         <div className="min-h-screen flex-1">{children}</div>
       </body>
     </html>

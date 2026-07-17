@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogIn, LogOut } from "lucide-react";
+import { fakeLogin, logout } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -10,7 +12,7 @@ const links = [
   { href: "/domestic-food", label: "Domestic Food" },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isAdmin }: { isAdmin: boolean }) => {
   const pathname = usePathname();
 
   return (
@@ -32,6 +34,21 @@ const Sidebar = () => {
           <Link href={href}>{label}</Link>
         </Button>
       ))}
+
+      {/* DEV-ONLY fake auth controls */}
+      <form action={isAdmin ? logout : fakeLogin} className="mt-auto flex flex-col">
+        <Button type="submit" variant="outline" className="justify-start">
+          {isAdmin ? (
+            <>
+              <LogOut /> Sign out
+            </>
+          ) : (
+            <>
+              <LogIn /> Fake sign in
+            </>
+          )}
+        </Button>
+      </form>
     </nav>
   );
 };
