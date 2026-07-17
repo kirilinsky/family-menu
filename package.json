@@ -9,6 +9,7 @@
     "@clerk/ui": "^1.25.5",
     "@libsql/client": "^0.17.4",
     "@tailwindcss/postcss": "^4.3.2",
+    "@vercel/blob": "^2.6.1",
     "anyaround": "^1.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

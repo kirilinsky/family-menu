@@ -3,6 +3,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
+import { put } from "@vercel/blob";
 import { getSession } from "@/lib/auth";
 import { buildFinalPrompt } from "@/lib/image-prompt";
 
@@ -109,8 +110,24 @@ async function getReferenceImageUrl(token: string): Promise<string> {
   return url;
 }
 
-// Step 2: final prompt + reference image → Replicate → image URL.
-// TODO: persist the image (Vercel Blob) instead of returning the temporary URL.
+// Replicate URLs die within ~1 hour — persist the bytes to Vercel Blob.
+// Without BLOB_READ_WRITE_TOKEN (local dev) the temporary URL is returned as-is.
+async function persistImage(temporaryUrl: string): Promise<string> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    console.warn("BLOB_READ_WRITE_TOKEN not set — returning temporary Replicate URL");
+    return temporaryUrl;
+  }
+  const image = await fetch(temporaryUrl);
+  if (!image.ok) throw new Error(`Image download failed: ${image.status}`);
+  const blob = await put("dishes/dish.jpg", await image.arrayBuffer(), {
+    access: "public",
+    addRandomSuffix: true,
+    contentType: "image/jpeg",
+  });
+  return blob.url;
+}
+
+// Step 2: final prompt + reference image → Replicate → persisted image URL.
 export async function generateDishImage(finalPrompt: string): Promise<ActionResult<string>> {
   await requireAdmin();
 
@@ -164,5 +181,10 @@ export async function generateDishImage(finalPrompt: string): Promise<ActionResu
   if (typeof url !== "string") {
     return { ok: false, error: `Generation ${prediction.status ?? "failed"}` };
   }
-  return { ok: true, data: url };
+
+  try {
+    return { ok: true, data: await persistImage(url) };
+  } catch (error) {
+    return { ok: false, error: (error as Error).message };
+  }
 }
