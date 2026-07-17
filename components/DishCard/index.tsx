@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -17,10 +18,14 @@ const DishCard = ({
   tags = ["Pasta", "Beef", "Béchamel", "Tomato"],
 }: DishCardProps) => (
   <article className="flex flex-col overflow-hidden rounded-lg border bg-card">
-    <div className="relative flex aspect-square items-center justify-center bg-[#f1efe7]">
-      <span className="text-7xl" role="img" aria-label={title}>
-        🍝
-      </span>
+    <div className="relative aspect-square bg-[#f1efe7]">
+      <Image
+        src="/dishes/chebakia.jpg"
+        alt={title}
+        fill
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        className="object-cover"
+      />
       <span className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-sm font-semibold">
         <Star className="size-4 fill-amber-400 text-amber-400" />
         {rating}

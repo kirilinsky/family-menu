@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { ImageIcon, Sparkles, Wand2 } from "lucide-react";
+import { useState, useTransition } from "react";
+import { ImageIcon, Loader2, Sparkles, Wand2 } from "lucide-react";
+import { generateDishImage, improveDishPrompt } from "@/app/actions/generate";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,11 +10,26 @@ import { Textarea } from "@/components/ui/textarea";
 const ImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
   const [finalPrompt, setFinalPrompt] = useState("");
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [improving, startImproving] = useTransition();
+  const [generating, startGenerating] = useTransition();
 
-  const improvePrompt = () => {
-    // TODO: call LLM to enhance the prompt; plain copy for now
-    setFinalPrompt(prompt.trim());
-  };
+  const improve = () =>
+    startImproving(async () => {
+      setError(null);
+      const result = await improveDishPrompt(prompt);
+      if (result.ok) setFinalPrompt(result.data);
+      else setError(result.error);
+    });
+
+  const generate = () =>
+    startGenerating(async () => {
+      setError(null);
+      const result = await generateDishImage(finalPrompt);
+      if (result.ok) setImageUrl(result.data);
+      else setError(result.error);
+    });
 
   return (
     <section className="flex flex-col gap-4 rounded-lg border bg-card p-5">
@@ -29,8 +45,14 @@ const ImageGenerator = () => {
           onChange={(e) => setPrompt(e.target.value)}
         />
       </div>
-      <Button type="button" variant="secondary" disabled={!prompt.trim()} onClick={improvePrompt}>
-        <Wand2 /> Improve prompt
+      <Button
+        type="button"
+        variant="secondary"
+        disabled={!prompt.trim() || improving}
+        onClick={improve}
+      >
+        {improving ? <Loader2 className="animate-spin" /> : <Wand2 />}
+        Improve prompt
       </Button>
 
       {/* Step 2: final prompt + generate */}
@@ -41,16 +63,37 @@ const ImageGenerator = () => {
           placeholder="Improved prompt appears here — editable before generation"
           value={finalPrompt}
           onChange={(e) => setFinalPrompt(e.target.value)}
+          className="min-h-32"
         />
       </div>
-      <Button type="button" disabled={!finalPrompt.trim()}>
-        <Sparkles /> Generate image
+      <Button type="button" disabled={!finalPrompt.trim() || generating} onClick={generate}>
+        {generating ? <Loader2 className="animate-spin" /> : <Sparkles />}
+        Generate image
       </Button>
 
-      <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed bg-muted text-muted-foreground">
-        <ImageIcon className="size-8" />
-        <span className="text-sm">Generated image will appear here</span>
-      </div>
+      {error && (
+        <p className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</p>
+      )}
+
+      {imageUrl ? (
+        // plain img: replicate.delivery host not whitelisted in next.config yet
+        <img
+          src={imageUrl}
+          alt="Generated dish"
+          className="aspect-square w-full rounded-md border object-cover"
+        />
+      ) : (
+        <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed bg-muted text-muted-foreground">
+          {generating ? (
+            <Loader2 className="size-8 animate-spin" />
+          ) : (
+            <ImageIcon className="size-8" />
+          )}
+          <span className="text-sm">
+            {generating ? "Generating…" : "Generated image will appear here"}
+          </span>
+        </div>
+      )}
     </section>
   );
 };
