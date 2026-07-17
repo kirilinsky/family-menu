@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ImageIcon, Sparkles, Star, X } from "lucide-react";
+import { Star, X } from "lucide-react";
+import ImageGenerator from "@/components/DishForm/ImageGenerator";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +17,6 @@ type DishFormProps = {
 };
 
 const DishForm = ({ variant }: DishFormProps) => {
-  const [prompt, setPrompt] = useState("");
   const [rating, setRating] = useState(0);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
@@ -33,25 +33,7 @@ const DishForm = ({ variant }: DishFormProps) => {
       onSubmit={(e) => e.preventDefault()}
     >
       {/* Block 1: image generator + result */}
-      <section className="flex flex-col gap-4 rounded-lg border bg-card p-5">
-        <h2 className="text-lg font-semibold tracking-tight">Image</h2>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="image-prompt">Prompt</Label>
-          <Textarea
-            id="image-prompt"
-            placeholder="Describe the dish for the image generator…"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-          />
-        </div>
-        <Button type="button" disabled={!prompt.trim()}>
-          <Sparkles /> Generate
-        </Button>
-        <div className="flex aspect-square flex-col items-center justify-center gap-2 rounded-md border border-dashed bg-muted text-muted-foreground">
-          <ImageIcon className="size-8" />
-          <span className="text-sm">Generated image will appear here</span>
-        </div>
-      </section>
+      <ImageGenerator />
 
       {/* Block 2: info fields */}
       <section className="flex flex-col gap-5 rounded-lg border bg-card p-5">
