@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Dish } from "@/lib/dishes";
@@ -60,7 +61,9 @@ const DishCard = ({ dish }: { dish: Dish }) => (
           ))}
         </div>
       )}
-      <Button className="mt-auto w-full">View Full Recipe</Button>
+      <Button asChild size="sm" className="mt-auto self-start">
+        <Link href={`/dish/${dish.id}`}>Details</Link>
+      </Button>
     </div>
   </article>
 );

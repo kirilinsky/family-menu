@@ -11,13 +11,8 @@ function parseList(value: unknown): string[] {
   }
 }
 
-export async function listDishes(type: DishType): Promise<Dish[]> {
-  const db = await getDb();
-  const { rows } = await db.execute({
-    sql: "SELECT * FROM dishes WHERE type = ? ORDER BY created_at DESC",
-    args: [type],
-  });
-  return rows.map((r) => ({
+function rowToDish(r: Record<string, unknown>): Dish {
+  return {
     id: Number(r.id),
     type: r.type as DishType,
     status: (r.status as DishStatus) ?? "tried",
@@ -33,5 +28,23 @@ export async function listDishes(type: DishType): Promise<Dish[]> {
     link: r.link == null ? null : String(r.link),
     linkTitle: r.link_title == null ? null : String(r.link_title),
     imageUrl: r.image_url == null ? null : String(r.image_url),
-  }));
+  };
+}
+
+export async function listDishes(type: DishType): Promise<Dish[]> {
+  const db = await getDb();
+  const { rows } = await db.execute({
+    sql: "SELECT * FROM dishes WHERE type = ? ORDER BY created_at DESC",
+    args: [type],
+  });
+  return rows.map(rowToDish);
+}
+
+export async function getDish(id: number): Promise<Dish | null> {
+  const db = await getDb();
+  const { rows } = await db.execute({
+    sql: "SELECT * FROM dishes WHERE id = ?",
+    args: [id],
+  });
+  return rows[0] ? rowToDish(rows[0]) : null;
 }
