@@ -1,3 +1,6 @@
+import PageLayout from "@/components/PageLayout";
+import { Button } from "@/components/ui/button";
+
 export default function DomesticFood() {
-  return <main />;
+  return <PageLayout title="Domestic Food" action={<Button>Add dish</Button>} />;
 }
