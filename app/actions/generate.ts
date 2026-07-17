@@ -15,6 +15,22 @@ async function requireAdmin() {
   if (!session?.isAdmin) throw new Error("Forbidden");
 }
 
+function actionError(error: unknown, fallback: string): ActionResult<never> {
+  if (error instanceof Anthropic.AuthenticationError) {
+    return { ok: false, error: "ANTHROPIC_API_KEY missing or invalid" };
+  }
+  if (error instanceof Anthropic.RateLimitError) {
+    return { ok: false, error: "Rate limited, try again in a minute" };
+  }
+  if (error instanceof Anthropic.APIError) {
+    return { ok: false, error: `Anthropic API error ${error.status}` };
+  }
+  if (error instanceof Error && error.message) {
+    return { ok: false, error: error.message };
+  }
+  return { ok: false, error: fallback };
+}
+
 export type DishMeta = {
   finalPrompt: string;
   name: string;
@@ -30,43 +46,43 @@ export async function improveDishPrompt(
   description: string,
   options: { categories: string[]; cuisines: string[] }
 ): Promise<ActionResult<DishMeta>> {
-  await requireAdmin();
-
-  const input = description.trim();
-  if (!input) return { ok: false, error: "Description is empty" };
-
-  const client = new Anthropic();
-
-  const schema = {
-    type: "object",
-    additionalProperties: false,
-    required: ["dish_description", "name", "ingredients", "cuisines", "category"],
-    properties: {
-      dish_description: {
-        type: "string",
-        description: "The image-generator phrase following the slot pattern",
-      },
-      name: {
-        type: "string",
-        description: "Dish display name in English, Title Case, max 5 words",
-      },
-      ingredients: {
-        type: "array",
-        items: { type: "string" },
-        description: "3-6 main ingredients, short English names, Capitalized",
-      },
-      cuisines: {
-        type: "array",
-        items: { type: "string" },
-        description: "1-2 canonical English cuisine names for the dish",
-      },
-      category: options.categories.length
-        ? { type: "string", enum: options.categories }
-        : { type: "string" },
-    },
-  };
-
   try {
+    await requireAdmin();
+
+    const input = description.trim();
+    if (!input) return { ok: false, error: "Description is empty" };
+
+    const client = new Anthropic();
+
+    const schema = {
+      type: "object",
+      additionalProperties: false,
+      required: ["dish_description", "name", "ingredients", "cuisines", "category"],
+      properties: {
+        dish_description: {
+          type: "string",
+          description: "The image-generator phrase following the slot pattern",
+        },
+        name: {
+          type: "string",
+          description: "Dish display name in English, Title Case, max 5 words",
+        },
+        ingredients: {
+          type: "array",
+          items: { type: "string" },
+          description: "3-6 main ingredients, short English names, Capitalized",
+        },
+        cuisines: {
+          type: "array",
+          items: { type: "string" },
+          description: "1-2 canonical English cuisine names for the dish",
+        },
+        category: options.categories.length
+          ? { type: "string", enum: options.categories }
+          : { type: "string" },
+      },
+    };
+
     const response = await client.messages.create({
       model: "claude-haiku-4-5",
       max_tokens: 500,
@@ -126,16 +142,7 @@ export async function improveDishPrompt(
       },
     };
   } catch (error) {
-    if (error instanceof Anthropic.AuthenticationError) {
-      return { ok: false, error: "ANTHROPIC_API_KEY missing or invalid" };
-    }
-    if (error instanceof Anthropic.RateLimitError) {
-      return { ok: false, error: "Rate limited, try again in a minute" };
-    }
-    if (error instanceof Anthropic.APIError) {
-      return { ok: false, error: `Anthropic API error ${error.status}` };
-    }
-    throw error;
+    return actionError(error, "Prompt improvement failed");
   }
 }
 
@@ -194,56 +201,51 @@ async function persistImage(temporaryUrl: string): Promise<string> {
 
 // Step 2: final prompt + reference image → Replicate → persisted image URL.
 export async function generateDishImage(finalPrompt: string): Promise<ActionResult<string>> {
-  await requireAdmin();
-
-  const prompt = finalPrompt.trim();
-  if (!prompt) return { ok: false, error: "Prompt is empty" };
-
-  const token = process.env.REPLICATE_API_TOKEN;
-  if (!token) return { ok: false, error: "REPLICATE_API_TOKEN is not set" };
-
-  let referenceUrl: string;
   try {
-    referenceUrl = await getReferenceImageUrl(token);
-  } catch (error) {
-    return { ok: false, error: (error as Error).message };
-  }
+    await requireAdmin();
 
-  const response = await fetch(
-    "https://api.replicate.com/v1/models/google/nano-banana-2/predictions",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Prefer: "wait",
-      },
-      body: JSON.stringify({
-        // Fixed output contract: square 1:1, ~1024px, single jpg
-        input: {
-          prompt,
-          image_input: [referenceUrl],
-          aspect_ratio: "1:1",
-          resolution: "1K",
-          output_format: "jpg",
+    const prompt = finalPrompt.trim();
+    if (!prompt) return { ok: false, error: "Prompt is empty" };
+
+    const token = process.env.REPLICATE_API_TOKEN;
+    if (!token) return { ok: false, error: "REPLICATE_API_TOKEN is not set" };
+
+    const referenceUrl = await getReferenceImageUrl(token);
+
+    const response = await fetch(
+      "https://api.replicate.com/v1/models/google/nano-banana-2/predictions",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Prefer: "wait",
         },
-      }),
+        body: JSON.stringify({
+          // Fixed output contract: square 1:1, ~1024px, single jpg
+          input: {
+            prompt,
+            image_input: [referenceUrl],
+            aspect_ratio: "1:1",
+            resolution: "1K",
+            output_format: "jpg",
+          },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      return { ok: false, error: `Replicate error ${response.status}` };
     }
-  );
 
-  if (!response.ok) {
-    return { ok: false, error: `Replicate error ${response.status}` };
-  }
+    const prediction = await response.json();
+    const url = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
+    if (typeof url !== "string") {
+      return { ok: false, error: `Generation ${prediction.status ?? "failed"}` };
+    }
 
-  const prediction = await response.json();
-  const url = Array.isArray(prediction.output) ? prediction.output[0] : prediction.output;
-  if (typeof url !== "string") {
-    return { ok: false, error: `Generation ${prediction.status ?? "failed"}` };
-  }
-
-  try {
     return { ok: true, data: await persistImage(url) };
   } catch (error) {
-    return { ok: false, error: (error as Error).message };
+    return actionError(error, "Image generation failed");
   }
 }

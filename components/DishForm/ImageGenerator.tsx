@@ -14,6 +14,9 @@ type ImageGeneratorProps = {
   onImage: (url: string, prompt: string) => void;
 };
 
+const displayError = (error: unknown, fallback: string) =>
+  error instanceof Error && error.message ? error.message : fallback;
+
 const ImageGenerator = ({ categories, cuisines, onAutofill, onImage }: ImageGeneratorProps) => {
   const [prompt, setPrompt] = useState("");
   const [finalPrompt, setFinalPrompt] = useState("");
@@ -25,30 +28,41 @@ const ImageGenerator = ({ categories, cuisines, onAutofill, onImage }: ImageGene
   const improve = () =>
     startImproving(async () => {
       setError(null);
-      const result = await improveDishPrompt(prompt, { categories, cuisines });
-      if (result.ok) {
-        const { finalPrompt: improved, ...meta } = result.data;
-        setFinalPrompt(improved);
-        onAutofill(meta);
-      } else {
-        setError(result.error);
+      try {
+        const result = await improveDishPrompt(prompt, { categories, cuisines });
+        if (result.ok) {
+          const { finalPrompt: improved, ...meta } = result.data;
+          setFinalPrompt(improved);
+          onAutofill(meta);
+        } else {
+          setError(result.error);
+        }
+      } catch (caught) {
+        setError(displayError(caught, "Prompt improvement failed"));
       }
     });
 
   const generate = () =>
     startGenerating(async () => {
       setError(null);
-      const result = await generateDishImage(finalPrompt);
-      if (result.ok) {
-        setImageUrl(result.data);
-        onImage(result.data, finalPrompt);
-      } else {
-        setError(result.error);
+      try {
+        const result = await generateDishImage(finalPrompt);
+        if (result.ok) {
+          setImageUrl(result.data);
+          onImage(result.data, finalPrompt);
+        } else {
+          setError(result.error);
+        }
+      } catch (caught) {
+        setError(displayError(caught, "Image generation failed"));
       }
     });
 
   return (
-    <section className="flex flex-col gap-4 rounded-lg border bg-card p-5">
+    <section
+      className="notranslate flex flex-col gap-4 rounded-lg border bg-card p-5"
+      translate="no"
+    >
       <h2 className="text-lg font-semibold tracking-tight">Image</h2>
 
       {/* Step 1: describe + improve */}
@@ -67,8 +81,9 @@ const ImageGenerator = ({ categories, cuisines, onAutofill, onImage }: ImageGene
         disabled={!prompt.trim() || improving}
         onClick={improve}
       >
-        {improving ? <Loader2 className="animate-spin" /> : <Wand2 />}
-        Improve prompt
+        <Loader2 className={improving ? "animate-spin" : "hidden"} />
+        <Wand2 className={improving ? "hidden" : undefined} />
+        <span>Improve prompt</span>
       </Button>
 
       {/* Step 2: final prompt + generate */}
@@ -82,9 +97,15 @@ const ImageGenerator = ({ categories, cuisines, onAutofill, onImage }: ImageGene
           className="min-h-32"
         />
       </div>
-      <Button type="button" disabled={!finalPrompt.trim() || generating} onClick={generate}>
-        {generating ? <Loader2 className="animate-spin" /> : <Sparkles />}
-        Generate image
+      <Button
+        type="button"
+        disabled={!finalPrompt.trim() || generating}
+        aria-busy={generating}
+        onClick={generate}
+      >
+        <Loader2 className={generating ? "animate-spin" : "hidden"} />
+        <Sparkles className={generating ? "hidden" : undefined} />
+        <span>Generate image</span>
       </Button>
 
       {error && (
@@ -105,9 +126,7 @@ const ImageGenerator = ({ categories, cuisines, onAutofill, onImage }: ImageGene
           ) : (
             <ImageIcon className="size-8" />
           )}
-          <span className="text-sm">
-            {generating ? "Generating…" : "Generated image will appear here"}
-          </span>
+          <span className="text-sm">Generated image will appear here</span>
         </div>
       )}
     </section>

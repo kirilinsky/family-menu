@@ -24,8 +24,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     // translate="no": Google Translate mutates the DOM under React and crashes it
-    <html lang="ru" translate="no" className={inter.variable}>
-      <body className="flex">
+    <html
+      lang="en"
+      translate="no"
+      suppressHydrationWarning
+      className={`${inter.variable} notranslate`}
+    >
+      <body className="notranslate flex" translate="no">
         <ClerkProvider appearance={{ theme: shadcn }}>
           <Sidebar isAdmin={session?.isAdmin ?? false} />
           <div className="min-h-screen flex-1">{children}</div>
