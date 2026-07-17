@@ -207,7 +207,7 @@ export async function generateDishImage(finalPrompt: string): Promise<ActionResu
   }
 
   const response = await fetch(
-    "https://api.replicate.com/v1/models/bytedance/seedream-4/predictions",
+    "https://api.replicate.com/v1/models/google/nano-banana-2/predictions",
     {
       method: "POST",
       headers: {
@@ -216,19 +216,13 @@ export async function generateDishImage(finalPrompt: string): Promise<ActionResu
         Prefer: "wait",
       },
       body: JSON.stringify({
-        // Fixed output contract: square 1:1, 1024x1024, single image
+        // Fixed output contract: square 1:1, ~1024px, single jpg
         input: {
           prompt,
-          // "custom" required for width/height to apply ("2K" preset would force 2048px)
-          size: "custom",
-          width: 1024,
-          height: 1024,
-          aspect_ratio: "1:1",
-          max_images: 1,
           image_input: [referenceUrl],
-          // no rewriting of our prompt — determinism over "creativity"
-          enhance_prompt: false,
-          sequential_image_generation: "disabled",
+          aspect_ratio: "1:1",
+          resolution: "1K",
+          output_format: "jpg",
         },
       }),
     }

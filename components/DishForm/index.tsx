@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Star, X } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2, Star, X } from "lucide-react";
+import { saveDish } from "@/app/actions/dishes";
 import ImageGenerator from "@/components/DishForm/ImageGenerator";
 import { Button } from "@/components/ui/button";
 import { CountrySelect } from "@/components/ui/country-select";
@@ -28,6 +30,10 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saving, startSaving] = useTransition();
+  const router = useRouter();
 
   const toggleCuisine = (cuisine: string) =>
     setSelectedCuisines((prev) =>
@@ -40,10 +46,40 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
     setTagInput("");
   };
 
+  const submit = (form: HTMLFormElement) =>
+    startSaving(async () => {
+      setSaveError(null);
+      const fields = new FormData(form);
+      const result = await saveDish({
+        type: variant,
+        status,
+        name,
+        country,
+        city: String(fields.get("city") ?? ""),
+        category,
+        cuisines: selectedCuisines,
+        ingredients: tags,
+        rating,
+        triedOn: String(fields.get("date") ?? ""),
+        comment: String(fields.get("comment") ?? ""),
+        link: String(fields.get("link") ?? ""),
+        linkTitle: String(fields.get("linkTitle") ?? ""),
+        imageUrl,
+      });
+      if (result.ok) {
+        router.push(variant === "travel" ? "/travel-food" : "/domestic-food");
+      } else {
+        setSaveError(result.error);
+      }
+    });
+
   return (
     <form
       className="grid max-w-5xl grid-cols-1 items-start gap-8 lg:grid-cols-2"
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={(e) => {
+        e.preventDefault();
+        submit(e.currentTarget);
+      }}
     >
       {/* Block 1: image generator + result; improve-step also autofills details */}
       <ImageGenerator
@@ -59,6 +95,7 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
           setSelectedCuisines(meta.cuisines);
           setTags((prev) => [...prev, ...meta.ingredients.filter((i) => !prev.includes(i))]);
         }}
+        onImage={setImageUrl}
       />
 
       {/* Block 2: info fields */}
@@ -105,13 +142,6 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
           </Select>
         </div>
 
-        {variant === "domestic" && (
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="dish-date">Tried / cooked on</Label>
-            <Input id="dish-date" name="date" type="date" />
-          </div>
-        )}
-
         {variant === "travel" && (
           <div className="flex flex-col gap-2">
             <Label>Status</Label>
@@ -138,7 +168,19 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
           </div>
         )}
 
-        {/* Rating exists only for tasted dishes — a wishlist item has none */}
+        {/* Date + rating exist only for tasted dishes — a wishlist item has neither */}
+        {(variant === "domestic" || status === "tried") && (
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="dish-date">Tried / cooked on</Label>
+            <Input
+              id="dish-date"
+              name="date"
+              type="date"
+              defaultValue={new Date().toISOString().slice(0, 10)}
+            />
+          </div>
+        )}
+
         {(variant === "domestic" || status === "tried") && (
           <div className="flex flex-col gap-2">
             <Label>Rating</Label>
@@ -241,7 +283,14 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
           <Input id="dish-link-title" name="linkTitle" placeholder="Recipe source" />
         </div>
 
-        <Button type="submit" className="mt-2">
+        {saveError && (
+          <p className="rounded-md bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {saveError}
+          </p>
+        )}
+
+        <Button type="submit" className="mt-2" disabled={saving || !name.trim()}>
+          {saving && <Loader2 className="animate-spin" />}
           Save dish
         </Button>
       </section>
