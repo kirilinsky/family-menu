@@ -20,7 +20,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const session = await getSession();
 
   return (
-    <html lang="ru" className={inter.variable}>
+    // translate="no": Google Translate mutates the DOM under React and crashes it
+    <html lang="ru" translate="no" className={inter.variable}>
       <body className="flex">
         <ClerkProvider appearance={{ theme: shadcn }}>
           <Sidebar isAdmin={session?.isAdmin ?? false} />

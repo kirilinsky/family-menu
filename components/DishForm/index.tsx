@@ -82,6 +82,11 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
         </div>
 
         <div className="flex flex-col gap-2">
+          <Label htmlFor="dish-city">City (optional)</Label>
+          <Input id="dish-city" name="city" placeholder="Marrakesh" />
+        </div>
+
+        <div className="flex flex-col gap-2">
           <Label htmlFor="dish-category">Category</Label>
           <Select
             id="dish-category"

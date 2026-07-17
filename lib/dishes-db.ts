@@ -23,6 +23,7 @@ export async function listDishes(type: DishType): Promise<Dish[]> {
     status: (r.status as DishStatus) ?? "tried",
     name: String(r.name),
     country: String(r.country ?? ""),
+    city: r.city == null ? null : String(r.city),
     category: String(r.category ?? ""),
     cuisines: parseList(r.cuisines),
     ingredients: parseList(r.ingredients),

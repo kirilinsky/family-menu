@@ -31,10 +31,13 @@ async function ensureSchema(db: Client): Promise<void> {
         type TEXT NOT NULL CHECK (type IN ('domestic', 'travel')),
         name TEXT NOT NULL,
         country TEXT NOT NULL DEFAULT '',
+        city TEXT,
         category TEXT NOT NULL DEFAULT '',
         cuisines TEXT NOT NULL DEFAULT '[]',
         ingredients TEXT NOT NULL DEFAULT '[]',
         rating INTEGER,
+        -- created_at = added to the list; tried_on = when it was actually tasted
+        -- (set on insert for "tried" dishes, stamped on the want→tried flip later)
         tried_on TEXT,
         comment TEXT,
         link TEXT,
