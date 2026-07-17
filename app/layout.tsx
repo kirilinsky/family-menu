@@ -14,6 +14,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "PadMenu",
   description: "Family menu",
+  // Belt & suspenders with <html translate="no">: Google Translate rewrites
+  // DOM text nodes under React and crashes reconciliation (insertBefore errors)
+  other: { google: "notranslate" },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
