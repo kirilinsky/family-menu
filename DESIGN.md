@@ -180,4 +180,4 @@ Used for dietary restrictions (e.g., "Vegan", "Gluten-Free"). These are fully ro
 Inputs are minimalist: 1px `slate-200` border, `14px` font size, and `12px 16px` padding. On focus, the border changes to the primary `Forest Green` with a subtle 2px ring.
 
 ### 3D Illustrations
-Food icons must be high-quality isometric 3D renders with soft lighting and realistic textures. These should be placed on subtle tinted circles or directly on the white card surface to pop.
+Food icons must be high-quality isometric 3D renders with soft lighting and realistic textures. These should be placed on subtle tinted circles or directly on the white card surface to pop.]

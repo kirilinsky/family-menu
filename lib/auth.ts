@@ -1,18 +1,14 @@
 import "server-only";
-import { cookies } from "next/headers";
+import { auth } from "@clerk/nextjs/server";
 
-// DEV-ONLY fake auth. The cookie is a plain marker anyone can forge —
-// replace with a real signed session (auth provider / JWT) before deploy.
-export const SESSION_COOKIE = "padmenu_session";
-export const ADMIN_TOKEN = "admin-dev";
-
+// Single-admin model: the Clerk user whose id matches ADMIN_USER_ID is admin.
 export type Session = {
+  userId: string;
   isAdmin: boolean;
 };
 
 export async function getSession(): Promise<Session | null> {
-  const store = await cookies();
-  const token = store.get(SESSION_COOKIE)?.value;
-  if (!token) return null;
-  return { isAdmin: token === ADMIN_TOKEN };
+  const { userId } = await auth();
+  if (!userId) return null;
+  return { userId, isAdmin: userId === process.env.ADMIN_USER_ID };
 }

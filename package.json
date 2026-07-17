@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@clerk/nextjs": "^7.5.20",
+    "@clerk/ui": "^1.25.5",
     "@tailwindcss/postcss": "^4.3.2",
     "anyaround": "^1.0.0",
     "class-variance-authority": "^0.7.1",

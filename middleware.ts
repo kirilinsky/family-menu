@@ -1,18 +1,24 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
-// Belt 1: edge gate for admin-only routes. The page itself re-checks
-// the session (belt 2) and the form is wrapped in AdminOnly (belt 3).
-const SESSION_COOKIE = "padmenu_session";
-const ADMIN_TOKEN = "admin-dev";
-
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get(SESSION_COOKIE)?.value;
-  if (token !== ADMIN_TOKEN) {
-    return NextResponse.redirect(new URL("/", request.url));
+// Belt 1: edge gate for admin-only routes. The page re-checks the session
+// (belt 2) and the form is wrapped in AdminOnly (belt 3).
+export default clerkMiddleware(async (auth, request) => {
+  if (request.nextUrl.pathname.startsWith("/add-dish")) {
+    const { userId } = await auth();
+    if (!userId || userId !== process.env.ADMIN_USER_ID) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
   }
-  return NextResponse.next();
-}
+});
 
 export const config = {
-  matcher: ["/add-dish"],
+  matcher: [
+    // Skip Next.js internals and static files
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Always run for API routes
+    "/(api|trpc)(.*)",
+    // Clerk auto-proxy
+    "/__clerk/:path*",
+  ],
 };
