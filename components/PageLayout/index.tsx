@@ -14,10 +14,14 @@ const PageLayout = ({ title, action, filters, children }: PageLayoutProps) => (
       {action}
     </header>
     {filters && <div className="flex flex-wrap items-center gap-4">{filters}</div>}
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {children}
-    </div>
+    {children}
   </main>
+);
+
+export const CardGrid = ({ children }: { children?: ReactNode }) => (
+  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {children}
+  </div>
 );
 
 export default PageLayout;
