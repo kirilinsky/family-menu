@@ -2,12 +2,18 @@
 
 import { useState, useTransition } from "react";
 import { ImageIcon, Loader2, Sparkles, Wand2 } from "lucide-react";
-import { generateDishImage, improveDishPrompt } from "@/app/actions/generate";
+import { generateDishImage, improveDishPrompt, type DishMeta } from "@/app/actions/generate";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 
-const ImageGenerator = () => {
+type ImageGeneratorProps = {
+  categories: string[];
+  cuisines: string[];
+  onAutofill: (meta: Omit<DishMeta, "finalPrompt">) => void;
+};
+
+const ImageGenerator = ({ categories, cuisines, onAutofill }: ImageGeneratorProps) => {
   const [prompt, setPrompt] = useState("");
   const [finalPrompt, setFinalPrompt] = useState("");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -18,9 +24,14 @@ const ImageGenerator = () => {
   const improve = () =>
     startImproving(async () => {
       setError(null);
-      const result = await improveDishPrompt(prompt);
-      if (result.ok) setFinalPrompt(result.data);
-      else setError(result.error);
+      const result = await improveDishPrompt(prompt, { categories, cuisines });
+      if (result.ok) {
+        const { finalPrompt: improved, ...meta } = result.data;
+        setFinalPrompt(improved);
+        onAutofill(meta);
+      } else {
+        setError(result.error);
+      }
     });
 
   const generate = () =>

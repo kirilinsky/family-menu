@@ -20,6 +20,7 @@ type DishFormProps = {
 const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
   const [rating, setRating] = useState(0);
   const [country, setCountry] = useState("");
+  const [category, setCategory] = useState("");
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
@@ -40,8 +41,16 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
       className="grid max-w-5xl grid-cols-1 items-start gap-8 lg:grid-cols-2"
       onSubmit={(e) => e.preventDefault()}
     >
-      {/* Block 1: image generator + result */}
-      <ImageGenerator />
+      {/* Block 1: image generator + result; improve-step also autofills details */}
+      <ImageGenerator
+        categories={categories}
+        cuisines={cuisines}
+        onAutofill={(meta) => {
+          if (meta.category) setCategory(meta.category);
+          setSelectedCuisines(meta.cuisines.filter((c) => cuisines.includes(c)));
+          setTags((prev) => [...prev, ...meta.ingredients.filter((i) => !prev.includes(i))]);
+        }}
+      />
 
       {/* Block 2: info fields */}
       <section className="flex flex-col gap-5 rounded-lg border bg-card p-5">
@@ -59,7 +68,12 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="dish-category">Category</Label>
-          <Select id="dish-category" name="category" defaultValue="">
+          <Select
+            id="dish-category"
+            name="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
             <option value="" disabled>
               Select category…
             </option>

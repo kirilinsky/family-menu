@@ -14,9 +14,20 @@ async function requireAdmin() {
   if (!session?.isAdmin) throw new Error("Forbidden");
 }
 
-// Step 1: user's rough description → Haiku → strict detailed dish description,
-// merged with the service template into the final image prompt.
-export async function improveDishPrompt(description: string): Promise<ActionResult<string>> {
+export type DishMeta = {
+  finalPrompt: string;
+  ingredients: string[];
+  cuisines: string[];
+  category: string;
+};
+
+// Step 1: user's rough description → Haiku → structured result:
+// strict dish description (merged with the service template) + main
+// ingredients + cuisine/category picked from the lists stored in the DB.
+export async function improveDishPrompt(
+  description: string,
+  options: { categories: string[]; cuisines: string[] }
+): Promise<ActionResult<DishMeta>> {
   await requireAdmin();
 
   const input = description.trim();
@@ -24,51 +35,81 @@ export async function improveDishPrompt(description: string): Promise<ActionResu
 
   const client = new Anthropic();
 
+  const schema = {
+    type: "object",
+    additionalProperties: false,
+    required: ["dish_description", "ingredients", "cuisines", "category"],
+    properties: {
+      dish_description: {
+        type: "string",
+        description: "The image-generator phrase following the slot pattern",
+      },
+      ingredients: {
+        type: "array",
+        items: { type: "string" },
+        description: "3-6 main ingredients, short English names, Capitalized",
+      },
+      cuisines: {
+        type: "array",
+        items: options.cuisines.length
+          ? { type: "string", enum: options.cuisines }
+          : { type: "string" },
+        description: "1-2 matching cuisines from the allowed list, empty if none fit",
+      },
+      category: options.categories.length
+        ? { type: "string", enum: options.categories }
+        : { type: "string" },
+    },
+  };
+
   try {
     const response = await client.messages.create({
       model: "claude-haiku-4-5",
-      max_tokens: 300,
+      max_tokens: 500,
       temperature: 0.2,
       system:
-        "You turn a rough dish description (any language) into one strict English phrase " +
-        "for a food image generator that swaps the food on a fixed reference shot. " +
-        "Always follow this exact slot pattern:\n\n" +
+        "You analyze a rough dish description (any language) for a family menu app and return JSON.\n\n" +
+        "dish_description — one strict English phrase for a food image generator that swaps " +
+        "the food on a fixed reference shot. Exact slot pattern:\n" +
         "<Dish name in English> — <shape/form and how it is made>, " +
         "<dominant colors and doneness>, <glaze/sauce/coating>, <toppings or garnish>, " +
-        "<surface texture qualities>.\n\n" +
-        "Rules:\n" +
-        "- Describe only the food itself. Never mention plate, bowl, background, lighting, camera.\n" +
-        "- No composition or layout words (arranged, positioned, stacked, cluster, centered, row) — " +
-        "the reference image dictates the layout. Only form, color, texture of the dish.\n" +
-        "- Concrete visual details: colors by name, textures (glossy, crispy, flaky), sizes of pieces.\n" +
-        "- One phrase, comma-separated clauses, 25-50 words. No quotes, no explanations, no line breaks.",
-      messages: [
-        // Few-shot: locks the output pattern
-        { role: "user", content: "марокканская чебакия" },
-        {
-          role: "assistant",
-          content:
-            "Moroccan chebakia — flower-shaped fried sesame cookies folded from strips of dough, " +
-            "deep golden-amber color, glazed with honey, generously sprinkled with toasted sesame seeds, " +
-            "glossy sticky surface",
-        },
-        { role: "user", content: "борщ со сметаной" },
-        {
-          role: "assistant",
-          content:
-            "Ukrainian borscht — hearty beet soup with shredded cabbage and tender beef chunks, " +
-            "deep ruby-red color, topped with a swirl of white sour cream and scattered fresh dill, " +
-            "glossy surface with light golden fat droplets",
-        },
-        { role: "user", content: input },
-      ],
+        "<surface texture qualities>.\n" +
+        "Example: 'Moroccan chebakia — flower-shaped fried sesame cookies folded from strips of dough, " +
+        "deep golden-amber color, glazed with honey, generously sprinkled with toasted sesame seeds, " +
+        "glossy sticky surface'\n" +
+        "Rules: describe only the food itself — never plate, bowl, background, lighting, camera. " +
+        "No composition or layout words (arranged, positioned, stacked, cluster, centered, row) — " +
+        "the reference image dictates layout. Concrete colors and textures. " +
+        "One phrase, comma-separated clauses, 25-50 words, no line breaks.\n\n" +
+        "ingredients — 3-6 main ingredients of the dish, short English names, Capitalized.\n" +
+        "cuisines — 1-2 from the allowed list, only if the dish truly belongs to that cuisine " +
+        "tradition. First name the dish's actual cuisine to yourself, then check: is it in the " +
+        "list? Not listed → empty array. Never substitute a neighboring or similar cuisine " +
+        "(e.g. borscht is Ukrainian: if Ukrainian is absent, return [] — not Balkan).\n" +
+        "category — the single best fit from the allowed list.",
+      messages: [{ role: "user", content: input }],
+      output_config: { format: { type: "json_schema", schema } },
     });
 
     const block = response.content[0];
     if (block?.type !== "text" || !block.text.trim()) {
       return { ok: false, error: "Empty response from model" };
     }
-    return { ok: true, data: buildFinalPrompt(block.text) };
+    const parsed = JSON.parse(block.text) as {
+      dish_description: string;
+      ingredients: string[];
+      cuisines: string[];
+      category: string;
+    };
+    return {
+      ok: true,
+      data: {
+        finalPrompt: buildFinalPrompt(parsed.dish_description),
+        ingredients: parsed.ingredients,
+        cuisines: parsed.cuisines,
+        category: parsed.category,
+      },
+    };
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) {
       return { ok: false, error: "ANTHROPIC_API_KEY missing or invalid" };
