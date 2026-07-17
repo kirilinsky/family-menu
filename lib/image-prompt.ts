@@ -1,11 +1,9 @@
-// Service part of the image prompt — every dish shot shares this styling.
-const PROMPT_TEMPLATE = `[DISH_DESCRIPTION], served on a simple round matte ceramic plate in warm off-white color,
-centered composition, 3D isometric view at 30 degrees, high angle,
-ultra-detailed food photography, realistic textures, appetizing glossy highlights,
-soft diffused studio lighting, gentle shadow under the plate,
-clean light gray seamless background (#f0f2f5), minimalist style,
-no props, no cutlery, no table, negative space around the plate,
-square format, product shot quality`;
+// Reference-image mode: plate, angle, lighting and framing are inherited
+// from the reference pixels, the prompt only swaps the food.
+const PROMPT_TEMPLATE = `Using the reference image: keep the exact same plate, camera angle,
+isometric perspective, lighting, shadows, background color and framing.
+Replace the food on the plate with: [DISH_DESCRIPTION].
+Do not change anything else.`;
 
 export function buildFinalPrompt(dishDescription: string): string {
   return PROMPT_TEMPLATE.replace("[DISH_DESCRIPTION]", dishDescription.trim());

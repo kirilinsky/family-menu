@@ -32,3 +32,6 @@ yarn-error.log*
 
 # personal learning roadmap
 ROADMAP.md
+
+# local sqlite
+local.db*

@@ -1,5 +1,7 @@
 "use server";
 
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import Anthropic from "@anthropic-ai/sdk";
 import { getSession } from "@/lib/auth";
 import { buildFinalPrompt } from "@/lib/image-prompt";
@@ -28,17 +30,17 @@ export async function improveDishPrompt(description: string): Promise<ActionResu
       temperature: 0.2,
       system:
         "You turn a rough dish description (any language) into one strict English phrase " +
-        "for a food image generator. Always follow this exact slot pattern:\n\n" +
+        "for a food image generator that swaps the food on a fixed reference shot. " +
+        "Always follow this exact slot pattern:\n\n" +
         "<Dish name in English> — <shape/form and how it is made>, " +
         "<dominant colors and doneness>, <glaze/sauce/coating>, <toppings or garnish>, " +
-        "<surface texture qualities>, <piece count and arrangement OR single-portion shape>.\n\n" +
+        "<surface texture qualities>.\n\n" +
         "Rules:\n" +
         "- Describe only the food itself. Never mention plate, bowl, background, lighting, camera.\n" +
-        "- Concrete visual details: colors by name, textures (glossy, crispy, flaky), sizes.\n" +
-        "- Countable items: state count (3-6 pieces) and arrangement (loose cluster, stacked, row).\n" +
-        "- Non-countable dishes: describe the single portion shape (neat mound, ladled portion, wedge slice). " +
-        "Never say bowl/plate for the portion; mention a vessel only when it is part of the dish itself (small dipping cup).\n" +
-        "- One phrase, comma-separated clauses, 30-60 words. No quotes, no explanations, no line breaks.",
+        "- No composition or layout words (arranged, positioned, stacked, cluster, centered, row) — " +
+        "the reference image dictates the layout. Only form, color, texture of the dish.\n" +
+        "- Concrete visual details: colors by name, textures (glossy, crispy, flaky), sizes of pieces.\n" +
+        "- One phrase, comma-separated clauses, 25-50 words. No quotes, no explanations, no line breaks.",
       messages: [
         // Few-shot: locks the output pattern
         { role: "user", content: "марокканская чебакия" },
@@ -47,7 +49,7 @@ export async function improveDishPrompt(description: string): Promise<ActionResu
           content:
             "Moroccan chebakia — flower-shaped fried sesame cookies folded from strips of dough, " +
             "deep golden-amber color, glazed with honey, generously sprinkled with toasted sesame seeds, " +
-            "glossy sticky surface, 4-5 pieces arranged in a loose cluster",
+            "glossy sticky surface",
         },
         { role: "user", content: "борщ со сметаной" },
         {
@@ -55,7 +57,7 @@ export async function improveDishPrompt(description: string): Promise<ActionResu
           content:
             "Ukrainian borscht — hearty beet soup with shredded cabbage and tender beef chunks, " +
             "deep ruby-red color, topped with a swirl of white sour cream and scattered fresh dill, " +
-            "glossy surface with light golden fat droplets, single ladled portion",
+            "glossy surface with light golden fat droplets",
         },
         { role: "user", content: input },
       ],
@@ -80,7 +82,34 @@ export async function improveDishPrompt(description: string): Promise<ActionResu
   }
 }
 
-// Step 2: final prompt → Replicate → image URL.
+// Style reference: every generation reuses the chebakia shot so plate, angle,
+// lighting and framing come from pixels, not words. Uploaded to Replicate
+// Files API (they can't fetch localhost); cached per server instance.
+let referenceCache: { url: string; expires: number } | null = null;
+
+async function getReferenceImageUrl(token: string): Promise<string> {
+  if (referenceCache && referenceCache.expires > Date.now()) {
+    return referenceCache.url;
+  }
+  const bytes = await readFile(path.join(process.cwd(), "public/dishes/chebakia.jpg"));
+  const form = new FormData();
+  form.append("content", new Blob([new Uint8Array(bytes)], { type: "image/jpeg" }), "chebakia.jpg");
+  const response = await fetch("https://api.replicate.com/v1/files", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
+  if (!response.ok) {
+    throw new Error(`Reference upload failed: ${response.status}`);
+  }
+  const file = await response.json();
+  const url = file?.urls?.get;
+  if (typeof url !== "string") throw new Error("Reference upload: no URL");
+  referenceCache = { url, expires: Date.now() + 60 * 60 * 1000 };
+  return url;
+}
+
+// Step 2: final prompt + reference image → Replicate → image URL.
 // TODO: persist the image (Vercel Blob) instead of returning the temporary URL.
 export async function generateDishImage(finalPrompt: string): Promise<ActionResult<string>> {
   await requireAdmin();
@@ -90,6 +119,13 @@ export async function generateDishImage(finalPrompt: string): Promise<ActionResu
 
   const token = process.env.REPLICATE_API_TOKEN;
   if (!token) return { ok: false, error: "REPLICATE_API_TOKEN is not set" };
+
+  let referenceUrl: string;
+  try {
+    referenceUrl = await getReferenceImageUrl(token);
+  } catch (error) {
+    return { ok: false, error: (error as Error).message };
+  }
 
   const response = await fetch(
     "https://api.replicate.com/v1/models/bytedance/seedream-4/predictions",
@@ -110,7 +146,9 @@ export async function generateDishImage(finalPrompt: string): Promise<ActionResu
           height: 1024,
           aspect_ratio: "1:1",
           max_images: 1,
-          image_input: [],
+          image_input: [referenceUrl],
+          // no rewriting of our prompt — determinism over "creativity"
+          enhance_prompt: false,
           sequential_image_generation: "disabled",
         },
       }),

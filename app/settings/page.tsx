@@ -1,27 +1,21 @@
 import { redirect } from "next/navigation";
 import { listCategories } from "@/app/actions/categories";
 import AdminOnly from "@/components/AdminOnly";
-import DishForm from "@/components/DishForm";
+import CategoryEditor from "@/components/CategoryEditor";
 import PageLayout from "@/components/PageLayout";
 import { getSession } from "@/lib/auth";
 
-export default async function AddDish({
-  searchParams,
-}: {
-  searchParams: Promise<{ type?: string }>;
-}) {
+export default async function Settings() {
   // Belt 2: middleware already gated this route; re-check server-side.
   const session = await getSession();
   if (!session?.isAdmin) redirect("/");
 
-  const { type } = await searchParams;
-  const variant = type === "travel" ? "travel" : "domestic";
   const categories = await listCategories();
 
   return (
-    <PageLayout title="Add Dish">
+    <PageLayout title="Settings">
       <AdminOnly>
-        <DishForm variant={variant} categories={categories.map((c) => c.name)} />
+        <CategoryEditor initial={categories} />
       </AdminOnly>
     </PageLayout>
   );

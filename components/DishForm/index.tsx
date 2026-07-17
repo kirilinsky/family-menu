@@ -10,13 +10,12 @@ import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
-const CATEGORIES = ["Main Course", "Soup", "Salad", "Dessert", "Snack", "Drink"];
-
 type DishFormProps = {
   variant: "domestic" | "travel";
+  categories: string[];
 };
 
-const DishForm = ({ variant }: DishFormProps) => {
+const DishForm = ({ variant, categories }: DishFormProps) => {
   const [rating, setRating] = useState(0);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
@@ -55,7 +54,7 @@ const DishForm = ({ variant }: DishFormProps) => {
             <option value="" disabled>
               Select category…
             </option>
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>

@@ -3,8 +3,10 @@ import { NextResponse } from "next/server";
 
 // Belt 1: edge gate for admin-only routes. The page re-checks the session
 // (belt 2) and the form is wrapped in AdminOnly (belt 3).
+const ADMIN_ROUTES = ["/add-dish", "/settings"];
+
 export default clerkMiddleware(async (auth, request) => {
-  if (request.nextUrl.pathname.startsWith("/add-dish")) {
+  if (ADMIN_ROUTES.some((r) => request.nextUrl.pathname.startsWith(r))) {
     const { userId } = await auth();
     if (!userId || userId !== process.env.ADMIN_USER_ID) {
       return NextResponse.redirect(new URL("/", request.url));

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignInButton, SignOutButton, useAuth } from "@clerk/nextjs";
-import { LogIn, LogOut } from "lucide-react";
+import { LogIn, LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -38,9 +38,24 @@ const Sidebar = ({ isAdmin }: { isAdmin: boolean }) => {
 
       <div className="mt-auto flex flex-col gap-1">
         {isAdmin && (
-          <div className="px-3 py-1 text-xs font-semibold tracking-widest uppercase text-muted-foreground">
-            Admin
-          </div>
+          <>
+            <div className="px-3 py-1 text-xs font-semibold tracking-widest uppercase text-muted-foreground">
+              Admin
+            </div>
+            <Button
+              asChild
+              variant="ghost"
+              className={cn(
+                "justify-start text-sidebar-foreground",
+                pathname === "/settings" &&
+                  "bg-sidebar-accent text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              )}
+            >
+              <Link href="/settings">
+                <Settings /> Settings
+              </Link>
+            </Button>
+          </>
         )}
         {isLoaded &&
           (isSignedIn ? (
