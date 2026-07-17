@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Star, X } from "lucide-react";
 import ImageGenerator from "@/components/DishForm/ImageGenerator";
 import { Button } from "@/components/ui/button";
+import { CountrySelect } from "@/components/ui/country-select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select } from "@/components/ui/select";
@@ -17,6 +18,7 @@ type DishFormProps = {
 
 const DishForm = ({ variant, categories }: DishFormProps) => {
   const [rating, setRating] = useState(0);
+  const [country, setCountry] = useState("");
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
 
@@ -45,7 +47,7 @@ const DishForm = ({ variant, categories }: DishFormProps) => {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="dish-country">Country</Label>
-          <Input id="dish-country" name="country" placeholder="Italy" />
+          <CountrySelect id="dish-country" name="country" value={country} onChange={setCountry} />
         </div>
 
         <div className="flex flex-col gap-2">
