@@ -1,7 +1,8 @@
 import Link from "next/link";
-import DishCard from "@/components/DishCard";
-import PageLayout, { CardGrid } from "@/components/PageLayout";
+import DishGrid from "@/components/DishGrid";
+import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
+import { TRAVEL_DISHES } from "@/lib/dishes";
 
 export default function TravelFood() {
   return (
@@ -13,11 +14,7 @@ export default function TravelFood() {
         </Button>
       }
     >
-      <CardGrid>
-        {Array.from({ length: 4 }, (_, i) => (
-          <DishCard key={i} />
-        ))}
-      </CardGrid>
+      <DishGrid dishes={TRAVEL_DISHES} />
     </PageLayout>
   );
 }
