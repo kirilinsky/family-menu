@@ -6,6 +6,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { put } from "@vercel/blob";
 import { getSession } from "@/lib/auth";
 import { buildFinalPrompt } from "@/lib/image-prompt";
+import { ensureRows } from "@/lib/taxonomy";
 
 type ActionResult<T> = { ok: true; data: T } | { ok: false; error: string };
 
@@ -16,6 +17,7 @@ async function requireAdmin() {
 
 export type DishMeta = {
   finalPrompt: string;
+  name: string;
   ingredients: string[];
   cuisines: string[];
   category: string;
@@ -38,11 +40,15 @@ export async function improveDishPrompt(
   const schema = {
     type: "object",
     additionalProperties: false,
-    required: ["dish_description", "ingredients", "cuisines", "category"],
+    required: ["dish_description", "name", "ingredients", "cuisines", "category"],
     properties: {
       dish_description: {
         type: "string",
         description: "The image-generator phrase following the slot pattern",
+      },
+      name: {
+        type: "string",
+        description: "Dish display name in English, Title Case, max 5 words",
       },
       ingredients: {
         type: "array",
@@ -51,10 +57,8 @@ export async function improveDishPrompt(
       },
       cuisines: {
         type: "array",
-        items: options.cuisines.length
-          ? { type: "string", enum: options.cuisines }
-          : { type: "string" },
-        description: "1-2 matching cuisines from the allowed list, empty if none fit",
+        items: { type: "string" },
+        description: "1-2 canonical English cuisine names for the dish",
       },
       category: options.categories.length
         ? { type: "string", enum: options.categories }
@@ -81,11 +85,15 @@ export async function improveDishPrompt(
         "No composition or layout words (arranged, positioned, stacked, cluster, centered, row) — " +
         "the reference image dictates layout. Concrete colors and textures. " +
         "One phrase, comma-separated clauses, 25-50 words, no line breaks.\n\n" +
+        "name — the dish display name in English, Title Case, short (e.g. 'Borscht', " +
+        "'Moroccan Chebakia').\n" +
         "ingredients — 3-6 main ingredients of the dish, short English names, Capitalized.\n" +
-        "cuisines — 1-2 from the allowed list, only if the dish truly belongs to that cuisine " +
-        "tradition. First name the dish's actual cuisine to yourself, then check: is it in the " +
-        "list? Not listed → empty array. Never substitute a neighboring or similar cuisine " +
-        "(e.g. borscht is Ukrainian: if Ukrainian is absent, return [] — not Balkan).\n" +
+        "cuisines — 1-2 canonical English cuisine names the dish truly belongs to " +
+        "(e.g. Ukrainian, Moroccan, Thai). Known cuisines so far: " +
+        `[${options.cuisines.join(", ")}] — reuse the exact spelling from this list when the ` +
+        "dish's cuisine is already there; otherwise output its proper canonical name and it " +
+        "will be added. Never substitute a neighboring cuisine for the real one " +
+        "(borscht is Ukrainian, not Balkan).\n" +
         "category — the single best fit from the allowed list.",
       messages: [{ role: "user", content: input }],
       output_config: { format: { type: "json_schema", schema } },
@@ -97,14 +105,18 @@ export async function improveDishPrompt(
     }
     const parsed = JSON.parse(block.text) as {
       dish_description: string;
+      name: string;
       ingredients: string[];
       cuisines: string[];
       category: string;
     };
+    // Register cuisines the model named that aren't in the list yet
+    await ensureRows("cuisines", parsed.cuisines);
     return {
       ok: true,
       data: {
         finalPrompt: buildFinalPrompt(parsed.dish_description),
+        name: parsed.name,
         ingredients: parsed.ingredients,
         cuisines: parsed.cuisines,
         category: parsed.category,
@@ -130,6 +142,12 @@ export async function improveDishPrompt(
 let referenceCache: { url: string; expires: number } | null = null;
 
 async function getReferenceImageUrl(token: string): Promise<string> {
+  // On Vercel public/ isn't on the function's filesystem (/var/task) — but the
+  // asset is already served from our own domain, Replicate can fetch it directly.
+  const host = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+  if (host) return `https://${host}/dishes/chebakia.jpg`;
+
+  // Local dev: localhost isn't reachable for Replicate — upload the file bytes.
   if (referenceCache && referenceCache.expires > Date.now()) {
     return referenceCache.url;
   }

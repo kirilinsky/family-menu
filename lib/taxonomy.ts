@@ -69,6 +69,23 @@ export async function renameRow(
   return { ok: true, data: await listRows(table) };
 }
 
+// Bulk "add if missing" — used by the prompt-improver to register cuisines
+// the model names that aren't in the list yet. Relies on UNIQUE COLLATE NOCASE.
+export async function ensureRows(table: TaxonomyTable, names: string[]): Promise<void> {
+  await requireAdmin();
+  const values = names.map((n) => n.trim()).filter((n) => n && n.length <= 40);
+  if (!values.length) return;
+
+  const db = await getDb();
+  for (const name of values) {
+    await db.execute({
+      sql: `INSERT OR IGNORE INTO ${table} (name) VALUES (?)`,
+      args: [name],
+    });
+  }
+  revalidatePath("/", "layout");
+}
+
 export async function deleteRow(table: TaxonomyTable, id: number): Promise<TaxonomyResult> {
   await requireAdmin();
 

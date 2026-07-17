@@ -19,9 +19,12 @@ type DishFormProps = {
 
 const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
   const [status, setStatus] = useState<"want" | "tried">("tried");
+  const [name, setName] = useState("");
   const [rating, setRating] = useState(0);
   const [country, setCountry] = useState("");
   const [category, setCategory] = useState("");
+  // Improve-step may introduce cuisines that weren't in the DB list yet
+  const [availableCuisines, setAvailableCuisines] = useState(cuisines);
   const [selectedCuisines, setSelectedCuisines] = useState<string[]>([]);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
@@ -47,8 +50,13 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
         categories={categories}
         cuisines={cuisines}
         onAutofill={(meta) => {
+          if (meta.name) setName(meta.name);
           if (meta.category) setCategory(meta.category);
-          setSelectedCuisines(meta.cuisines.filter((c) => cuisines.includes(c)));
+          setAvailableCuisines((prev) => [
+            ...prev,
+            ...meta.cuisines.filter((c) => !prev.includes(c)),
+          ]);
+          setSelectedCuisines(meta.cuisines);
           setTags((prev) => [...prev, ...meta.ingredients.filter((i) => !prev.includes(i))]);
         }}
       />
@@ -59,7 +67,13 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="dish-name">Dish name</Label>
-          <Input id="dish-name" name="name" placeholder="Lasagna Classica" />
+          <Input
+            id="dish-name"
+            name="name"
+            placeholder="Lasagna Classica"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -148,7 +162,7 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
           <Label>Cuisines</Label>
           <input type="hidden" name="cuisines" value={selectedCuisines.join(",")} />
           <div className="flex flex-wrap gap-2">
-            {cuisines.map((cuisine) => {
+            {availableCuisines.map((cuisine) => {
               const active = selectedCuisines.includes(cuisine);
               return (
                 <button
