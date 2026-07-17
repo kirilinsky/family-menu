@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { anyaround } from "anyaround";
 import DishCard from "@/components/DishCard";
 import { CardGrid } from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,13 @@ const groupDishes = (dishes: Dish[], groupBy: Exclude<GroupBy, "none">) => {
     const key = dish[groupBy];
     groups.set(key, [...(groups.get(key) ?? []), dish]);
   }
-  return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
+  return [...groups.entries()]
+    .map(([key, items]) => ({
+      key,
+      label: groupBy === "country" ? anyaround(key, { mode: "region", display: "flag-name" }) : key,
+      items,
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
 };
 
 const DishGrid = ({ dishes }: { dishes: Dish[] }) => {
@@ -50,10 +57,10 @@ const DishGrid = ({ dishes }: { dishes: Dish[] }) => {
           ))}
         </CardGrid>
       ) : (
-        groupDishes(dishes, groupBy).map(([group, items]) => (
-          <section key={group} className="flex flex-col gap-4">
+        groupDishes(dishes, groupBy).map(({ key, label, items }) => (
+          <section key={key} className="flex flex-col gap-4">
             <h2 className="flex items-baseline gap-2 text-xl font-semibold tracking-tight">
-              {group}
+              {label}
               <span className="text-sm font-normal text-muted-foreground">{items.length}</span>
             </h2>
             <CardGrid>
