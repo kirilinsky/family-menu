@@ -115,6 +115,7 @@ const DishForm = ({ variant, categories, cuisines }: DishFormProps) => {
             placeholder="Lasagna Classica"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            onBlur={() => setName((n) => n.trim())}
           />
         </div>
 

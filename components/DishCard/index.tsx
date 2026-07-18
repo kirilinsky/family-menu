@@ -1,10 +1,16 @@
 import Image from "next/image";
 import Link from "next/link";
+import { anyaround } from "anyaround";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { Dish } from "@/lib/dishes";
 
-const DishCard = ({ dish }: { dish: Dish }) => (
+type DishCardProps = {
+  dish: Dish;
+  showCountry?: boolean;
+};
+
+const DishCard = ({ dish, showCountry = true }: DishCardProps) => (
   <article className="flex flex-col overflow-hidden rounded-lg border bg-card">
     <div className="relative aspect-square bg-[#f1efe7]">
       {dish.imageUrl ? (
@@ -22,6 +28,11 @@ const DishCard = ({ dish }: { dish: Dish }) => (
           aria-label={dish.name}
         >
           🍽️
+        </span>
+      )}
+      {showCountry && dish.country && (
+        <span className="absolute top-3 left-3 flex items-center gap-1 rounded-full bg-card px-2.5 py-1 text-xs font-semibold">
+          {anyaround(dish.country, { mode: "region", display: "flag" })}
         </span>
       )}
       {dish.status === "want" ? (

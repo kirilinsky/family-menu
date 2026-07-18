@@ -92,7 +92,7 @@ const DishGrid = ({ dishes: allDishes, withStatusFilter = false }: DishGridProps
       {groupBy === "none" ? (
         <CardGrid>
           {dishes.map((dish) => (
-            <DishCard key={dish.id} dish={dish} />
+            <DishCard key={dish.id} dish={dish} showCountry />
           ))}
         </CardGrid>
       ) : (
@@ -104,7 +104,7 @@ const DishGrid = ({ dishes: allDishes, withStatusFilter = false }: DishGridProps
             </h2>
             <CardGrid>
               {items.map((dish) => (
-                <DishCard key={dish.id} dish={dish} />
+                <DishCard key={dish.id} dish={dish} showCountry={groupBy !== "country"} />
               ))}
             </CardGrid>
           </section>
