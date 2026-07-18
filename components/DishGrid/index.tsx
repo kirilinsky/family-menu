@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { anyaround } from "anyaround";
+import { Layers, ListFilter } from "lucide-react";
 import DishCard from "@/components/DishCard";
 import { CardGrid } from "@/components/PageLayout";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import type { Dish } from "@/lib/dishes";
 
 const GROUP_OPTIONS = [
@@ -43,6 +44,52 @@ type DishGridProps = {
   withStatusFilter?: boolean;
 };
 
+type SegmentedControlProps<T extends string> = {
+  icon: React.ElementType;
+  label: string;
+  options: ReadonlyArray<{ value: T; label: string }>;
+  value: T;
+  onChange: (value: T) => void;
+};
+
+const SegmentedControl = <T extends string>({
+  icon: Icon,
+  label,
+  options,
+  value,
+  onChange,
+}: SegmentedControlProps<T>) => (
+  <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-2.5">
+    <span className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
+      <Icon className="size-4" aria-hidden />
+      {label}
+    </span>
+    <div
+      role="radiogroup"
+      aria-label={label}
+      className="grid auto-cols-fr grid-flow-col gap-0.5 rounded-full border border-border bg-muted/60 p-1 sm:inline-flex"
+    >
+      {options.map(({ value: optionValue, label: optionLabel }) => (
+        <button
+          key={optionValue}
+          type="button"
+          role="radio"
+          aria-checked={value === optionValue}
+          onClick={() => onChange(optionValue)}
+          className={cn(
+            "rounded-full px-3.5 py-1.5 text-sm font-medium whitespace-nowrap transition-all",
+            value === optionValue
+              ? "bg-primary text-primary-foreground shadow-sm"
+              : "text-muted-foreground hover:bg-background/80 hover:text-foreground"
+          )}
+        >
+          {optionLabel}
+        </button>
+      ))}
+    </div>
+  </div>
+);
+
 const DishGrid = ({ dishes: allDishes, withStatusFilter = false }: DishGridProps) => {
   const [groupBy, setGroupBy] = useState<GroupBy>("none");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
@@ -54,36 +101,22 @@ const DishGrid = ({ dishes: allDishes, withStatusFilter = false }: DishGridProps
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-2 text-sm font-medium text-muted-foreground">Group by</span>
-          {GROUP_OPTIONS.map(({ value, label }) => (
-            <Button
-              key={value}
-              type="button"
-              size="sm"
-              variant={groupBy === value ? "secondary" : "ghost"}
-              onClick={() => setGroupBy(value)}
-            >
-              {label}
-            </Button>
-          ))}
-        </div>
+      <div className="flex flex-col gap-4 rounded-lg border border-border bg-card p-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 sm:gap-y-3 sm:p-4">
+        <SegmentedControl
+          icon={Layers}
+          label="Group by"
+          options={GROUP_OPTIONS}
+          value={groupBy}
+          onChange={setGroupBy}
+        />
         {withStatusFilter && (
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="mr-2 text-sm font-medium text-muted-foreground">Status</span>
-            {STATUS_OPTIONS.map(({ value, label }) => (
-              <Button
-                key={value}
-                type="button"
-                size="sm"
-                variant={statusFilter === value ? "secondary" : "ghost"}
-                onClick={() => setStatusFilter(value)}
-              >
-                {label}
-              </Button>
-            ))}
-          </div>
+          <SegmentedControl
+            icon={ListFilter}
+            label="Status"
+            options={STATUS_OPTIONS}
+            value={statusFilter}
+            onChange={setStatusFilter}
+          />
         )}
       </div>
 

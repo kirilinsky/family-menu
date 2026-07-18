@@ -55,23 +55,23 @@ const DishCard = ({ dish, showCountry = true }: DishCardProps) => (
         </span>
         {dish.triedOn && (
           <span className="shrink-0 text-xs font-medium text-secondary-foreground">
-            {dish.triedOn}
+            {dish.triedOn.slice(0, 4)}
           </span>
         )}
       </div>
       <h3 className="text-lg font-semibold tracking-tight">{dish.name}</h3>
       {dish.ingredients.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
+        <div className="flex flex-wrap gap-1">
           {dish.ingredients.slice(0, 4).map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground"
+              className="rounded-full bg-secondary px-2 py-0.5 text-[11px] text-secondary-foreground"
             >
               {tag}
             </span>
           ))}
           {dish.ingredients.length > 4 && (
-            <span className="rounded-full bg-secondary px-2.5 py-1 text-xs text-secondary-foreground">
+            <span className="rounded-full bg-secondary px-2 py-0.5 text-[11px] text-secondary-foreground">
               +{dish.ingredients.length - 4}
             </span>
           )}
